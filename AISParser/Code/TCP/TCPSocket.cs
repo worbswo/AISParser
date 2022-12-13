@@ -120,7 +120,7 @@ namespace AISParser.Code.TCP
                                 endByte[idx] = tmpByte[idx];
                             }
                         }
-                        ReceiveMessageList.Enqueue(new AISData() { Data= (byte[])endByte.Clone() ,Length=tmpByte.Count});
+                        ReceiveMessageList.Enqueue(new AISData((byte[])endByte.Clone(), tmpByte.Count));
                         tmpByte.Clear();
 
                         isStart = false;

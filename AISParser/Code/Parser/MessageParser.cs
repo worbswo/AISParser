@@ -79,7 +79,7 @@ namespace AISParser.Code.Parser
 
             for (int k=0;k<message.Length;k++)
             {
-                byte item = message.Data[k];
+                byte item = message[k];
                 int sixBits = SixBitConvert(item);
                 if (item == '$') return null;
                 if (item == ',')
