@@ -1,0 +1,413 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4C1C3981-2B6A-47E5-B23A-EA59C831B9C4}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>AISParser</RootNamespace>
+    <AssemblyName>AISParser</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Code\Command\CommandBehavior.cs" />
+    <Compile Include="Code\Command\RelayCommand.cs" />
+    <Compile Include="Code\DispatcheService.cs" />
+    <Compile Include="Code\Message\AddressedBinaryMessage.cs" />
+    <Compile Include="Code\Message\AidsToNavigationMessage.cs" />
+    <Compile Include="Code\Message\AISMessageBase.cs" />
+    <Compile Include="Code\Message\BaseStationMessage.cs" />
+    <Compile Include="Code\Message\BinaryBroadcastMessage.cs" />
+    <Compile Include="Code\Message\CommunicationState\ITDMA.cs" />
+    <Compile Include="Code\Message\CommunicationState\SOTDMA.cs" />
+    <Compile Include="Code\Message\DataLinkManagementMessage.cs" />
+    <Compile Include="Code\Message\InternationalFunctionMessage\AcknowledgementToAddressedBinaryMessage.cs" />
+    <Compile Include="Code\Message\InternationalFunctionMessage\AddressBinaryMessage.cs" />
+    <Compile Include="Code\Message\InternationalFunctionMessage\CapabilityInterrogation.cs" />
+    <Compile Include="Code\Message\InternationalFunctionMessage\CapabilityReply.cs" />
+    <Compile Include="Code\Message\InternationalFunctionMessage\InternationalFunctionMessageBase.cs" />
+    <Compile Include="Code\Message\InternationalFunctionMessage\SpecificFunctionalMessage.cs" />
+    <Compile Include="Code\Message\InterrogationMessage.cs" />
+    <Compile Include="Code\Message\PositionReportMessage.cs" />
+    <Compile Include="Code\Message\ShipStaticAndVoyageRelatedDataMessage.cs" />
+    <Compile Include="Code\Message\StandardClassBEquipment.cs" />
+    <Compile Include="Code\Message\StandardSearchAndResuceAircraftMessage.cs" />
+    <Compile Include="Code\Message\StaticDataMessage.cs" />
+    <Compile Include="Code\MySortDescription.cs" />
+    <Compile Include="Code\Parser\BitParser.cs" />
+    <Compile Include="Code\Parser\Interface\IArithmeticable.cs" />
+    <Compile Include="Code\Parser\LongMessageTemplete.cs" />
+    <Compile Include="Code\Parser\MessageParser.cs" />
+    <Compile Include="Code\StringToImageSourceConverter.cs" />
+    <Compile Include="Code\TCP\AISData.cs" />
+    <Compile Include="Code\TCP\TCPSocket.cs" />
+    <Compile Include="Model\Ship.cs" />
+    <Compile Include="Resources\UserTemplate\StaticInfomation.xaml.cs">
+      <DependentUpon>StaticInfomation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\DetailWindowViewModel.cs" />
+    <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="ViewModel\ShipViewModel.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="View\DetailWindow.xaml.cs">
+      <DependentUpon>DetailWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\UserTemplate\DynamicInfomation.xaml.cs">
+      <DependentUpon>DynamicInfomation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Resources\ButtonStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\UserTemplate\StaticInfomation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\DetailWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\UserTemplate\DynamicInfomation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\NationImage\ad.png" />
+    <Resource Include="Resources\NationImage\ae.png" />
+    <Resource Include="Resources\NationImage\af.png" />
+    <Resource Include="Resources\NationImage\ag.png" />
+    <Resource Include="Resources\NationImage\ai.png" />
+    <Resource Include="Resources\NationImage\al.png" />
+    <Resource Include="Resources\NationImage\am.png" />
+    <Resource Include="Resources\NationImage\an.png" />
+    <Resource Include="Resources\NationImage\ao.png" />
+    <Resource Include="Resources\NationImage\ar.png" />
+    <Resource Include="Resources\NationImage\as.png" />
+    <Resource Include="Resources\NationImage\at.png" />
+    <Resource Include="Resources\NationImage\au.png" />
+    <Resource Include="Resources\NationImage\aw.png" />
+    <Resource Include="Resources\NationImage\ax.png" />
+    <Resource Include="Resources\NationImage\az.png" />
+    <Resource Include="Resources\NationImage\ba.png" />
+    <Resource Include="Resources\NationImage\bb.png" />
+    <Resource Include="Resources\NationImage\bd.png" />
+    <Resource Include="Resources\NationImage\be.png" />
+    <Resource Include="Resources\NationImage\bf.png" />
+    <Resource Include="Resources\NationImage\bg.png" />
+    <Resource Include="Resources\NationImage\bh.png" />
+    <Resource Include="Resources\NationImage\bi.png" />
+    <Resource Include="Resources\NationImage\bj.png" />
+    <Resource Include="Resources\NationImage\bm.png" />
+    <Resource Include="Resources\NationImage\bn.png" />
+    <Resource Include="Resources\NationImage\bo.png" />
+    <Resource Include="Resources\NationImage\br.png" />
+    <Resource Include="Resources\NationImage\bs.png" />
+    <Resource Include="Resources\NationImage\bt.png" />
+    <Resource Include="Resources\NationImage\bv.png" />
+    <Resource Include="Resources\NationImage\bw.png" />
+    <Resource Include="Resources\NationImage\by.png" />
+    <Resource Include="Resources\NationImage\bz.png" />
+    <Resource Include="Resources\NationImage\ca.png" />
+    <Resource Include="Resources\NationImage\catalonia.png" />
+    <Resource Include="Resources\NationImage\cc.png" />
+    <Resource Include="Resources\NationImage\cd.png" />
+    <Resource Include="Resources\NationImage\cf.png" />
+    <Resource Include="Resources\NationImage\cg.png" />
+    <Resource Include="Resources\NationImage\ch.png" />
+    <Resource Include="Resources\NationImage\ci.png" />
+    <Resource Include="Resources\NationImage\ck.png" />
+    <Resource Include="Resources\NationImage\cl.png" />
+    <Resource Include="Resources\NationImage\cm.png" />
+    <Resource Include="Resources\NationImage\cn.png" />
+    <Resource Include="Resources\NationImage\co.png" />
+    <Resource Include="Resources\NationImage\cr.png" />
+    <Resource Include="Resources\NationImage\cs.png" />
+    <Resource Include="Resources\NationImage\cu.png" />
+    <Resource Include="Resources\NationImage\cv.png" />
+    <Resource Include="Resources\NationImage\cx.png" />
+    <Resource Include="Resources\NationImage\cy.png" />
+    <Resource Include="Resources\NationImage\cz.png" />
+    <Resource Include="Resources\NationImage\de.png" />
+    <Resource Include="Resources\NationImage\dj.png" />
+    <Resource Include="Resources\NationImage\dk.png" />
+    <Resource Include="Resources\NationImage\dm.png" />
+    <Resource Include="Resources\NationImage\do.png" />
+    <Resource Include="Resources\NationImage\dz.png" />
+    <Resource Include="Resources\NationImage\ec.png" />
+    <Resource Include="Resources\NationImage\ee.png" />
+    <Resource Include="Resources\NationImage\eg.png" />
+    <Resource Include="Resources\NationImage\eh.png" />
+    <Resource Include="Resources\NationImage\england.png" />
+    <Resource Include="Resources\NationImage\er.png" />
+    <Resource Include="Resources\NationImage\es.png" />
+    <Resource Include="Resources\NationImage\et.png" />
+    <Resource Include="Resources\NationImage\europeanunion.png" />
+    <Resource Include="Resources\NationImage\fam.png" />
+    <Resource Include="Resources\NationImage\fi.png" />
+    <Resource Include="Resources\NationImage\fj.png" />
+    <Resource Include="Resources\NationImage\fk.png" />
+    <Resource Include="Resources\NationImage\fm.png" />
+    <Resource Include="Resources\NationImage\fo.png" />
+    <Resource Include="Resources\NationImage\fr.png" />
+    <Resource Include="Resources\NationImage\ga.png" />
+    <Resource Include="Resources\NationImage\gb.png" />
+    <Resource Include="Resources\NationImage\gd.png" />
+    <Resource Include="Resources\NationImage\ge.png" />
+    <Resource Include="Resources\NationImage\gf.png" />
+    <Resource Include="Resources\NationImage\gh.png" />
+    <Resource Include="Resources\NationImage\gi.png" />
+    <Resource Include="Resources\NationImage\gl.png" />
+    <Resource Include="Resources\NationImage\gm.png" />
+    <Resource Include="Resources\NationImage\gn.png" />
+    <Resource Include="Resources\NationImage\gp.png" />
+    <Resource Include="Resources\NationImage\gq.png" />
+    <Resource Include="Resources\NationImage\gr.png" />
+    <Resource Include="Resources\NationImage\gs.png" />
+    <Resource Include="Resources\NationImage\gt.png" />
+    <Resource Include="Resources\NationImage\gu.png" />
+    <Resource Include="Resources\NationImage\gw.png" />
+    <Resource Include="Resources\NationImage\gy.png" />
+    <Resource Include="Resources\NationImage\hk.png" />
+    <Resource Include="Resources\NationImage\hm.png" />
+    <Resource Include="Resources\NationImage\hn.png" />
+    <Resource Include="Resources\NationImage\hr.png" />
+    <Resource Include="Resources\NationImage\ht.png" />
+    <Resource Include="Resources\NationImage\hu.png" />
+    <Resource Include="Resources\NationImage\id.png" />
+    <Resource Include="Resources\NationImage\ie.png" />
+    <Resource Include="Resources\NationImage\il.png" />
+    <Resource Include="Resources\NationImage\in.png" />
+    <Resource Include="Resources\NationImage\io.png" />
+    <Resource Include="Resources\NationImage\iq.png" />
+    <Resource Include="Resources\NationImage\ir.png" />
+    <Resource Include="Resources\NationImage\is.png" />
+    <Resource Include="Resources\NationImage\it.png" />
+    <Resource Include="Resources\NationImage\jm.png" />
+    <Resource Include="Resources\NationImage\jo.png" />
+    <Resource Include="Resources\NationImage\jp.png" />
+    <Resource Include="Resources\NationImage\ke.png" />
+    <Resource Include="Resources\NationImage\kg.png" />
+    <Resource Include="Resources\NationImage\kh.png" />
+    <Resource Include="Resources\NationImage\ki.png" />
+    <Resource Include="Resources\NationImage\km.png" />
+    <Resource Include="Resources\NationImage\kn.png" />
+    <Resource Include="Resources\NationImage\kp.png" />
+    <Resource Include="Resources\NationImage\kr.png" />
+    <Resource Include="Resources\NationImage\kw.png" />
+    <Resource Include="Resources\NationImage\ky.png" />
+    <Resource Include="Resources\NationImage\kz.png" />
+    <Resource Include="Resources\NationImage\la.png" />
+    <Resource Include="Resources\NationImage\lb.png" />
+    <Resource Include="Resources\NationImage\lc.png" />
+    <Resource Include="Resources\NationImage\li.png" />
+    <Resource Include="Resources\NationImage\lk.png" />
+    <Resource Include="Resources\NationImage\lr.png" />
+    <Resource Include="Resources\NationImage\ls.png" />
+    <Resource Include="Resources\NationImage\lt.png" />
+    <Resource Include="Resources\NationImage\lu.png" />
+    <Resource Include="Resources\NationImage\lv.png" />
+    <Resource Include="Resources\NationImage\ly.png" />
+    <Resource Include="Resources\NationImage\ma.png" />
+    <Resource Include="Resources\NationImage\mc.png" />
+    <Resource Include="Resources\NationImage\md.png" />
+    <Resource Include="Resources\NationImage\me.png" />
+    <Resource Include="Resources\NationImage\mg.png" />
+    <Resource Include="Resources\NationImage\mh.png" />
+    <Resource Include="Resources\NationImage\mk.png" />
+    <Resource Include="Resources\NationImage\ml.png" />
+    <Resource Include="Resources\NationImage\mm.png" />
+    <Resource Include="Resources\NationImage\mn.png" />
+    <Resource Include="Resources\NationImage\mo.png" />
+    <Resource Include="Resources\NationImage\mp.png" />
+    <Resource Include="Resources\NationImage\mq.png" />
+    <Resource Include="Resources\NationImage\mr.png" />
+    <Resource Include="Resources\NationImage\ms.png" />
+    <Resource Include="Resources\NationImage\mt.png" />
+    <Resource Include="Resources\NationImage\mu.png" />
+    <Resource Include="Resources\NationImage\mv.png" />
+    <Resource Include="Resources\NationImage\mw.png" />
+    <Resource Include="Resources\NationImage\mx.png" />
+    <Resource Include="Resources\NationImage\my.png" />
+    <Resource Include="Resources\NationImage\mz.png" />
+    <Resource Include="Resources\NationImage\na.png" />
+    <Resource Include="Resources\NationImage\nc.png" />
+    <Resource Include="Resources\NationImage\ne.png" />
+    <Resource Include="Resources\NationImage\nf.png" />
+    <Resource Include="Resources\NationImage\ng.png" />
+    <Resource Include="Resources\NationImage\ni.png" />
+    <Resource Include="Resources\NationImage\nl.png" />
+    <Resource Include="Resources\NationImage\no.png" />
+    <Resource Include="Resources\NationImage\np.png" />
+    <Resource Include="Resources\NationImage\nr.png" />
+    <Resource Include="Resources\NationImage\nu.png" />
+    <Resource Include="Resources\NationImage\nz.png" />
+    <Resource Include="Resources\NationImage\om.png" />
+    <Resource Include="Resources\NationImage\pa.png" />
+    <Resource Include="Resources\NationImage\pe.png" />
+    <Resource Include="Resources\NationImage\pf.png" />
+    <Resource Include="Resources\NationImage\pg.png" />
+    <Resource Include="Resources\NationImage\ph.png" />
+    <Resource Include="Resources\NationImage\pk.png" />
+    <Resource Include="Resources\NationImage\pl.png" />
+    <Resource Include="Resources\NationImage\pm.png" />
+    <Resource Include="Resources\NationImage\pn.png" />
+    <Resource Include="Resources\NationImage\pr.png" />
+    <Resource Include="Resources\NationImage\ps.png" />
+    <Resource Include="Resources\NationImage\pt.png" />
+    <Resource Include="Resources\NationImage\pw.png" />
+    <Resource Include="Resources\NationImage\py.png" />
+    <Resource Include="Resources\NationImage\qa.png" />
+    <Resource Include="Resources\NationImage\re.png" />
+    <Resource Include="Resources\NationImage\ro.png" />
+    <Resource Include="Resources\NationImage\rs.png" />
+    <Resource Include="Resources\NationImage\ru.png" />
+    <Resource Include="Resources\NationImage\rw.png" />
+    <Resource Include="Resources\NationImage\sa.png" />
+    <Resource Include="Resources\NationImage\sb.png" />
+    <Resource Include="Resources\NationImage\sc.png" />
+    <Resource Include="Resources\NationImage\scotland.png" />
+    <Resource Include="Resources\NationImage\sd.png" />
+    <Resource Include="Resources\NationImage\se.png" />
+    <Resource Include="Resources\NationImage\sg.png" />
+    <Resource Include="Resources\NationImage\sh.png" />
+    <Resource Include="Resources\NationImage\si.png" />
+    <Resource Include="Resources\NationImage\sj.png" />
+    <Resource Include="Resources\NationImage\sk.png" />
+    <Resource Include="Resources\NationImage\sl.png" />
+    <Resource Include="Resources\NationImage\sm.png" />
+    <Resource Include="Resources\NationImage\sn.png" />
+    <Resource Include="Resources\NationImage\so.png" />
+    <Resource Include="Resources\NationImage\sr.png" />
+    <Resource Include="Resources\NationImage\st.png" />
+    <Resource Include="Resources\NationImage\sv.png" />
+    <Resource Include="Resources\NationImage\sy.png" />
+    <Resource Include="Resources\NationImage\sz.png" />
+    <Resource Include="Resources\NationImage\tc.png" />
+    <Resource Include="Resources\NationImage\td.png" />
+    <Resource Include="Resources\NationImage\tf.png" />
+    <Resource Include="Resources\NationImage\tg.png" />
+    <Resource Include="Resources\NationImage\th.png" />
+    <Resource Include="Resources\NationImage\tj.png" />
+    <Resource Include="Resources\NationImage\tk.png" />
+    <Resource Include="Resources\NationImage\tl.png" />
+    <Resource Include="Resources\NationImage\tm.png" />
+    <Resource Include="Resources\NationImage\tn.png" />
+    <Resource Include="Resources\NationImage\to.png" />
+    <Resource Include="Resources\NationImage\tr.png" />
+    <Resource Include="Resources\NationImage\tt.png" />
+    <Resource Include="Resources\NationImage\tv.png" />
+    <Resource Include="Resources\NationImage\tw.png" />
+    <Resource Include="Resources\NationImage\tz.png" />
+    <Resource Include="Resources\NationImage\ua.png" />
+    <Resource Include="Resources\NationImage\ug.png" />
+    <Resource Include="Resources\NationImage\um.png" />
+    <Resource Include="Resources\NationImage\us.png" />
+    <Resource Include="Resources\NationImage\uy.png" />
+    <Resource Include="Resources\NationImage\uz.png" />
+    <Resource Include="Resources\NationImage\va.png" />
+    <Resource Include="Resources\NationImage\vc.png" />
+    <Resource Include="Resources\NationImage\ve.png" />
+    <Resource Include="Resources\NationImage\vg.png" />
+    <Resource Include="Resources\NationImage\vi.png" />
+    <Resource Include="Resources\NationImage\vn.png" />
+    <Resource Include="Resources\NationImage\vu.png" />
+    <Resource Include="Resources\NationImage\wales.png" />
+    <Resource Include="Resources\NationImage\wf.png" />
+    <Resource Include="Resources\NationImage\ws.png" />
+    <Resource Include="Resources\NationImage\ye.png" />
+    <Resource Include="Resources\NationImage\yt.png" />
+    <Resource Include="Resources\NationImage\za.png" />
+    <Resource Include="Resources\NationImage\zm.png" />
+    <Resource Include="Resources\NationImage\zw.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
