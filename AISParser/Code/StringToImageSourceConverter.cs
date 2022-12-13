@@ -21,7 +21,6 @@ namespace AISParser.Code
             imagePath = String.Format("pack://application:,,,/{0};component/Resources/NationImage/{1}", System.Reflection.Assembly.GetEntryAssembly().GetName().Name, (string)value);
             
             if (imagePath==null) return null;
-            //if(!File.Exists(imagePath)) return null;
             BitmapImage image = new BitmapImage(new Uri(imagePath,UriKind.RelativeOrAbsolute));
             if (image == null) return null;
             return image;
