@@ -14,12 +14,26 @@ namespace AISParser.Code
 
         Dictionary<string, SortDescription> Sort { get; set; }
 
+		public SortDescription this[string index]
+		{
+			get
+			{
+				return Sort[index];
+			}
+			set
+			{
+				if (Sort.ContainsKey(index))
+				{
+					Sort[index] = value;
+				}
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region Constructor
+		#region Constructor
 
-        public MySortDescription(ListSortDirection listSortDirection)
+		public MySortDescription(ListSortDirection listSortDirection)
         {
             Sort = new Dictionary<string, SortDescription>()
             {
@@ -35,20 +49,7 @@ namespace AISParser.Code
                 { "COG",            new SortDescription("COG", listSortDirection) },
             };
         }
-        public SortDescription this[string index]
-        {
-            get
-            {
-                return Sort[index]; 
-            }
-            set
-            {
-                if (Sort.ContainsKey(index))
-                {
-                    Sort[index] = value;
-                }
-            }
-        }
+      
         #endregion
     }
 }

@@ -115,15 +115,17 @@ namespace AISParser.Code.Message
         public string ReceivingDate { get; set; }
         public int MID { get; set; }
 
-        #endregion
+		#endregion
 
-        #region Method
-        /// <summary>
-        /// RoT 계산
-        /// </summary>
-        /// <param name="rot"></param>
-        /// <returns></returns>
-        public static string ConvertROT(int rot)
+		#region Method
+
+		#region Static Method
+		/// <summary>
+		/// RoT 계산
+		/// </summary>
+		/// <param name="rot"></param>
+		/// <returns></returns>
+		public static string ConvertROT(int rot)
         {
             if (rot == -128)
             {
@@ -269,11 +271,13 @@ namespace AISParser.Code.Message
             }
             return messageStr;
         }
-        /// <summary>
-        /// 들어온 메시지를 파싱
-        /// </summary>
-        /// <param name="message"></param>
-        virtual public void Parsing(byte[] message)
+
+		#endregion
+		/// <summary>
+		/// 들어온 메시지를 파싱
+		/// </summary>
+		/// <param name="message"></param>
+		virtual public void Parsing(byte[] message)
         {
             ReceivingDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             MessageId = BitParser<MyByte>.Parsing(message, 0, 6).val;
