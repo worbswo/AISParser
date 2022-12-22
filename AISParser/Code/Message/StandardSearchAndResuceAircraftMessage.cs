@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code.Message
 {
-    public class StandardSearchAndResuceAircraftMessage :AISMessageBase
+	sealed public class StandardSearchAndResuceAircraftMessage :AISMessageBase
     {
         #region Property
         public ushort Altitude { get; set; }

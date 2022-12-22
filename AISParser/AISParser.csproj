@@ -87,6 +87,24 @@
     <Compile Include="Code\StringToImageSourceConverter.cs" />
     <Compile Include="Code\TCP\AISData.cs" />
     <Compile Include="Code\TCP\TCPSocket.cs" />
+    <Compile Include="Model\AISBase.cs" />
+    <Compile Include="Model\AirCraft\AISAirCraft.cs" />
+    <Compile Include="Model\AirCraft\AirCraftDynamic.cs" />
+    <Compile Include="Model\AirCraft\AirCraftStatic.cs" />
+    <Compile Include="Model\AtoN\AISAtoN.cs" />
+    <Compile Include="Model\AtoN\AtoNDynamic.cs" />
+    <Compile Include="Model\AtoN\AtoNStatic.cs" />
+    <Compile Include="Model\BaseStation\AISBaseStation.cs" />
+    <Compile Include="Model\BaseStation\BaseStationDynamic.cs" />
+    <Compile Include="Model\BaseStation\BaseStationStatic.cs" />
+    <Compile Include="Model\ClassA\AISClassA.cs" />
+    <Compile Include="Model\AISDynamic.cs" />
+    <Compile Include="Model\AISStatic.cs" />
+    <Compile Include="Model\ClassA\ClassADynamic.cs" />
+    <Compile Include="Model\ClassA\ClassAStatic.cs" />
+    <Compile Include="Model\ClassB\AISClassB.cs" />
+    <Compile Include="Model\ClassB\ClassBDynamic.cs" />
+    <Compile Include="Model\ClassB\ClassBStatic.cs" />
     <Compile Include="Model\Ship.cs" />
     <Compile Include="Resources\UserTemplate\StaticInfomation.xaml.cs">
       <DependentUpon>StaticInfomation.xaml</DependentUpon>

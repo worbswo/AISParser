@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code.Message.CommunicationState
 {
-    public class SOTDMA
+	sealed public class SOTDMA
     {
         public byte SyncState { get; set; } = new byte();
         public byte SlotTimeout { get; set; } = new byte();

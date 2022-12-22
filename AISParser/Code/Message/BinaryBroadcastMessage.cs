@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code.Message
 {
-    public class BinaryBroadcastMessage :AISMessageBase
+	sealed public class BinaryBroadcastMessage :AISMessageBase
     {
         #region Property
         public byte RepeateIndicator { get; set; }

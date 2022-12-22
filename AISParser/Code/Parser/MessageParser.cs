@@ -13,7 +13,7 @@ using System.Windows;
 namespace AISParser.Code.Parser
 {
 
-    public class MessageParser
+	sealed public class MessageParser
     {
         #region Property
         internal int Count { get; set; }

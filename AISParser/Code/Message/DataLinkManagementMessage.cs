@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code.Message
 {
-    public class DataLinkManagementMessage : AISMessageBase
+	sealed public class DataLinkManagementMessage : AISMessageBase
     {
         #region Property
         public byte Spare { get; set; } 

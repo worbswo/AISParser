@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace AISParser.Code.Command
 {
-    public class RelayCommand : ICommand
+	sealed public class RelayCommand : ICommand
     {
         #region Field
         Action<object> _executeMethod;

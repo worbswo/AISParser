@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code.Message
 {
-    public class ShipStaticAndVoyageRelatedDataMessage : AISMessageBase
+	sealed public class ShipStaticAndVoyageRelatedDataMessage : AISMessageBase
     {
         #region Property
         public byte AISVersionIndicator { get; set; }

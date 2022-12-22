@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.ViewModel
 {
-    public class DetailWindowViewModel : ViewModelBase
+	sealed public class DetailWindowViewModel : ViewModelBase
     {
 
         #region Field

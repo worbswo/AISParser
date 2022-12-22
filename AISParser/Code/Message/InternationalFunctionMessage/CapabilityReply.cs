@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code.Message.InternationalFunctionMessage
 {
-    public class CapabilityReply : InternationalFunctionMessageBase
+    sealed public class CapabilityReply : InternationalFunctionMessageBase
     {
         #region Property
         public ushort DACCode { get; set; }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code
 {
-    public class MySortDescription
+	sealed public class MySortDescription
     {
         #region Property
 

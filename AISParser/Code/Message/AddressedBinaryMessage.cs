@@ -9,7 +9,7 @@ using AISParser.Code.Message.InternationalFunctionMessage;
 
 namespace AISParser.Code.Message
 {
-    public class AddressedBinaryMessage :AISMessageBase
+	sealed public class AddressedBinaryMessage :AISMessageBase
     {
         #region Property
         public byte RepeateIndicator { get; set; }

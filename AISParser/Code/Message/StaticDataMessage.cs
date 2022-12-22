@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code.Message
 {
-    public class StaticDataMessage :AISMessageBase
+	sealed public class StaticDataMessage :AISMessageBase
     {
         #region Property
         public byte PartNumber { get; set; }    

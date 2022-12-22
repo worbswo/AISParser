@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code.TCP
 {
-    public class AISData
+	sealed public class AISData
     {
         #region Property
         internal byte[] Data { get; set; } = new byte[0];

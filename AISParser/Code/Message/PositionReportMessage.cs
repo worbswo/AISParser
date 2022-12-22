@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code.Message
 {
-    public class PositionReportMessage : AISMessageBase
+	sealed public class PositionReportMessage : AISMessageBase
     {
 
         #region Property

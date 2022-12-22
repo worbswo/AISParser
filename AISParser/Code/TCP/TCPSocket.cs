@@ -6,8 +6,8 @@ using System.Net.Sockets;
 using System.Threading;
 namespace AISParser.Code.TCP
 {
- 
-    public class TCPSocket
+
+	sealed public class TCPSocket
     {
         #region Property
 

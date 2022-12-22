@@ -3,6 +3,11 @@ using AISParser.Code.Command;
 using AISParser.Code.Message;
 using AISParser.Code.Parser;
 using AISParser.Model;
+using AISParser.Model.AirCraft;
+using AISParser.Model.AtoN;
+using AISParser.Model.BaseStation;
+using AISParser.Model.ClassA;
+using AISParser.Model.ClassB;
 using AISParser.View;
 using System;
 using System.Collections;
@@ -11,6 +16,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
+using System.Security.AccessControl;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -21,8 +30,8 @@ using System.Windows.Input;
 
 namespace AISParser.ViewModel
 {
-    
-    public class MainWindowViewModel :ViewModelBase
+
+	sealed public class MainWindowViewModel :ViewModelBase
     {
 
     #region Field 
@@ -66,12 +75,12 @@ namespace AISParser.ViewModel
         #region SortDescription
         MySortDescription SortAC { get; set; } = new MySortDescription(ListSortDirection.Ascending);
         MySortDescription SortDC { get; set; } = new MySortDescription(ListSortDirection.Descending);
-
-       
-
         #endregion
+
         internal bool isSearch { get; set; } = false;
         internal bool isItem { get; set; } = false;
+
+
         public Dictionary<string, string> DicHeaderName
         {
             get
@@ -395,7 +404,7 @@ namespace AISParser.ViewModel
                 }
                 else if ((int)AISMessageBase.MessageId == 9)
                 {
-                    DispatcherService.Invoke(StandardClassBEquipmentPositionConvert);
+                    DispatcherService.Invoke(StandardSearchAndRescueAircraftConvert);
                 }
                 else if ((int)AISMessageBase.MessageId == 18)
                 {
@@ -757,41 +766,65 @@ namespace AISParser.ViewModel
             
             if (!DicShip.ContainsKey((int)message.UserId))
             {
+				AISBase aisBase = new AISClassA();
+				aisBase.AISDynamic		= new ClassADynamic();
+				aisBase.AISType			= "Class A";
+                aisBase.MMSI			= (int)message.UserId;
+                aisBase.Nationality		= AISMessageBase.NationNumber[message.MID][0];
+                aisBase.MID				= (int)message.MID;
+				aisBase.ReceivingDate	= message.ReceivingDate;
 
-                DicShip.Add((int)message.UserId, new ShipViewModel(new Ship()
-                {
-                    AISType             = "Class A",
-                    MMSI                = (int)message.UserId,
-                    Nationality         = AISMessageBase.NationNumber[message.MID][0],
-                    MID                 = (int)message.MID,
-                    COG                 = message.COG / 10f,
-                    PositionAccuracyD   = positionAccuracy,
-                    ROT                 = AISMessageBase.ConvertROT(message.RateOfTurnROTAIS),
-                    ShipHeadDirection   = message.TrueHeading.ToString(),
-                    Longtitude          = ConvertCoord(longtitude),
-                    Latitude            = ConvertCoord(latitude,false),
-                    TimeStamp           = message.TimeStemp.ToString(),
-                    SOG                 = message.SOG / 10f,
-                    NaviStatus          = AISMessageBase.NaviSatus[(int)message.NavigationalStatus],
-                    ReceivingDate       = message.ReceivingDate
-                }));
+				(aisBase.AISDynamic as ClassADynamic).COG					= message.COG / 10f;
+				(aisBase.AISDynamic as ClassADynamic).PositionAccuracyD		= positionAccuracy;
+				(aisBase.AISDynamic as ClassADynamic).ROT					= AISMessageBase.ConvertROT(message.RateOfTurnROTAIS);
+				(aisBase.AISDynamic as ClassADynamic).ShipHeadDirection		= message.TrueHeading.ToString();
+				(aisBase.AISDynamic as ClassADynamic).Longtitude			= ConvertCoord(longtitude);
+				(aisBase.AISDynamic as ClassADynamic).Latitude				= ConvertCoord(latitude, false);
+				(aisBase.AISDynamic as ClassADynamic).TimeStamp				= message.TimeStemp.ToString();
+				(aisBase.AISDynamic as ClassADynamic).SOG					= message.SOG / 10f;
+				(aisBase.AISDynamic as ClassADynamic).NaviStatus			= AISMessageBase.NaviSatus[(int)message.NavigationalStatus];
+				DicShip.Add((int)message.UserId, new ShipViewModel(aisBase));
+
                 ShipCollection.Add((DicShip[(int)message.UserId]));
                 
             }
             else
             {
-                DicShip[(int)message.UserId].AISType             = "Class A";
-                DicShip[(int)message.UserId].MMSI                = (int)message.UserId;
-                DicShip[(int)message.UserId].COG                 = message.COG / 10f;
-                DicShip[(int)message.UserId].PositionAccuracyD   = positionAccuracy;
-                DicShip[(int)message.UserId].ROT                 = AISMessageBase.ConvertROT(message.RateOfTurnROTAIS);
-                DicShip[(int)message.UserId].ShipHeadDirection   = message.TrueHeading.ToString();
-                DicShip[(int)message.UserId].Longtitude          = ConvertCoord(longtitude);
-                DicShip[(int)message.UserId].Latitude            = ConvertCoord(latitude,false);
-                DicShip[(int)message.UserId].TimeStamp           = message.TimeStemp.ToString();
-                DicShip[(int)message.UserId].SOG                 = message.SOG / 10f;
-                DicShip[(int)message.UserId].ReceivingDate       = message.ReceivingDate;
-                DicShip[(int)message.UserId].NaviStatus          = AISMessageBase.NaviSatus[(int)message.NavigationalStatus];
+				if (DicShip[(int)message.UserId].GetShip().AISDynamic == null)
+				{
+					AISBase tmp= DicShip[(int)message.UserId].GetShip();
+					tmp.AISDynamic		= new ClassADynamic();
+					tmp.AISType			= "Class A";
+					tmp.MMSI			= (int)message.UserId;
+					tmp.Nationality		= AISMessageBase.NationNumber[message.MID][0];
+					tmp.MID				= (int)message.MID;
+					tmp.ReceivingDate	= message.ReceivingDate;
+
+					(tmp.AISDynamic as ClassADynamic).COG					= message.COG / 10f;
+					(tmp.AISDynamic as ClassADynamic).PositionAccuracyD		= positionAccuracy;
+					(tmp.AISDynamic as ClassADynamic).ROT					= AISMessageBase.ConvertROT(message.RateOfTurnROTAIS);
+					(tmp.AISDynamic as ClassADynamic).ShipHeadDirection		= message.TrueHeading.ToString();
+					(tmp.AISDynamic as ClassADynamic).Longtitude			= ConvertCoord(longtitude);
+					(tmp.AISDynamic as ClassADynamic).Latitude				= ConvertCoord(latitude, false);
+					(tmp.AISDynamic as ClassADynamic).TimeStamp				= message.TimeStemp.ToString();
+					(tmp.AISDynamic as ClassADynamic).SOG					= message.SOG / 10f;
+					(tmp.AISDynamic as ClassADynamic).NaviStatus			= AISMessageBase.NaviSatus[(int)message.NavigationalStatus];
+					DicShip[(int)message.UserId].SetShip(tmp);
+				}
+				else { 
+					DicShip[(int)message.UserId].AISType             = "Class A";
+					DicShip[(int)message.UserId].MMSI                = (int)message.UserId;
+					DicShip[(int)message.UserId].COG                 = message.COG / 10f;
+					DicShip[(int)message.UserId].PositionAccuracyD   = positionAccuracy;
+					DicShip[(int)message.UserId].ROT                 = AISMessageBase.ConvertROT(message.RateOfTurnROTAIS);
+					DicShip[(int)message.UserId].ShipHeadDirection   = message.TrueHeading.ToString();
+					DicShip[(int)message.UserId].Longtitude          = ConvertCoord(longtitude);
+					DicShip[(int)message.UserId].Latitude            = ConvertCoord(latitude,false);
+					DicShip[(int)message.UserId].TimeStamp           = message.TimeStemp.ToString();
+					DicShip[(int)message.UserId].SOG                 = message.SOG / 10f;
+					DicShip[(int)message.UserId].ReceivingDate       = message.ReceivingDate;
+					DicShip[(int)message.UserId].NaviStatus          = AISMessageBase.NaviSatus[(int)message.NavigationalStatus];
+				}
                 if (SelectedItem != null)
                 {
                     if (message.UserId == SelectedItem.MMSI)
@@ -812,42 +845,68 @@ namespace AISParser.ViewModel
            
             if (!DicShip.ContainsKey((int)message.UserId))
             {
-                DicShip.Add((int)message.UserId, new ShipViewModel(new Ship()
-                {
-                    AISType             = "Class A",
-                    MMSI                = (int)message.UserId,
-                    Nationality         = AISMessageBase.NationNumber[message.MID][0],
-                    MID                 = (int)message.MID,
-                    IMO                 = (int)message.IMONumber,
-                    Callsign            = AISMessageBase.Convert6bitAscII(message.CallSine, 7),
-                    ShipName            = AISMessageBase.Convert6bitAscII(message.Name, 20),
-                    DestinationPort     = AISMessageBase.Convert6bitAscII(message.Destination, 20),
-                    ShipLength          = message.ShipLength,
-                    ShipWidth           = message.ShipWidth,
-                    TypeOfShip          = AISMessageBase.ConvertCargoType((int)message.TypeOfShipAndCargoType),
-                    PositionAccuracy    = AISMessageBase.PositionFixingDevice[(int)message.TypeOfElectronicPositionFixingDevice],
-                    ReceivingDate       = message.ReceivingDate,
-                    TargetDraft         = (float)message.MaximumPresentStaticDraught / 10f,
-                    ETA                 = String.Format("{0:00}.{1:00} {2:00}:{3:00}", message.ETAMonth, message.ETADay, message.ETAHour, message.ETAMinute)
-                }));
+				AISBase aisBase = new AISClassA();
+
+				aisBase.AISStatic			= new ClassAStatic();
+				aisBase.AISType             = "Class A";
+				aisBase.MMSI                = (int)message.UserId;
+				aisBase.Nationality         = AISMessageBase.NationNumber[message.MID][0];
+				aisBase.MID                 = (int)message.MID;
+				aisBase.PositionAccuracy	= AISMessageBase.PositionFixingDevice[(int)message.TypeOfElectronicPositionFixingDevice];
+				aisBase.ReceivingDate		= message.ReceivingDate;
+
+				(aisBase.AISStatic as ClassAStatic).IMO                 = (int)message.IMONumber;
+				(aisBase.AISStatic as ClassAStatic).Callsign            = AISMessageBase.Convert6bitAscII(message.CallSine, 7);
+				(aisBase.AISStatic as ClassAStatic).ShipName            = AISMessageBase.Convert6bitAscII(message.Name, 20);
+				(aisBase.AISStatic as ClassAStatic).DestinationPort     = AISMessageBase.Convert6bitAscII(message.Destination, 20);
+				(aisBase.AISStatic as ClassAStatic).ShipLength          = message.ShipLength;
+				(aisBase.AISStatic as ClassAStatic).ShipWidth           = message.ShipWidth;
+				(aisBase.AISStatic as ClassAStatic).TypeOfShip          = AISMessageBase.ConvertCargoType((int)message.TypeOfShipAndCargoType);
+				(aisBase.AISStatic as ClassAStatic).TargetDraft         = (float)message.MaximumPresentStaticDraught / 10f;
+				(aisBase.AISStatic as ClassAStatic).ETA                 = String.Format("{0:00}.{1:00} {2:00}:{3:00}", message.ETAMonth, message.ETADay, message.ETAHour, message.ETAMinute);
+				DicShip.Add((int)message.UserId, new ShipViewModel(aisBase));
                 ShipCollection.Add((DicShip[(int)message.UserId]));
 
             }
             else
             {
-                DicShip[(int)message.UserId].MMSI                = (int)message.UserId;
-                DicShip[(int)message.UserId].AISType             = "Class A";
-                DicShip[(int)message.UserId].IMO                 = (int)message.IMONumber;
-                DicShip[(int)message.UserId].Callsign            = AISMessageBase.Convert6bitAscII(message.CallSine, 7);
-                DicShip[(int)message.UserId].ShipName            = AISMessageBase.Convert6bitAscII(message.Name, 20);
-                DicShip[(int)message.UserId].DestinationPort     = AISMessageBase.Convert6bitAscII(message.Destination, 20);
-                DicShip[(int)message.UserId].ShipLength          = message.ShipLength;
-                DicShip[(int)message.UserId].ShipWidth           = message.ShipWidth;
-                DicShip[(int)message.UserId].TypeOfShip          = AISMessageBase.ConvertCargoType((int)message.TypeOfShipAndCargoType);
-                DicShip[(int)message.UserId].PositionAccuracy    = AISMessageBase.PositionFixingDevice[(int)message.TypeOfElectronicPositionFixingDevice];
-                DicShip[(int)message.UserId].ReceivingDate       = message.ReceivingDate;
-                DicShip[(int)message.UserId].TargetDraft         = (float)message.MaximumPresentStaticDraught/10f;
-                DicShip[(int)message.UserId].ETA                 = String.Format("{0:00}.{1:00} {2:00}:{3:00}", message.ETAMonth, message.ETADay, message.ETAHour, message.ETAMinute);
+				if (DicShip[(int)message.UserId].GetShip().AISStatic == null)
+				{
+					AISBase tmp = DicShip[(int)message.UserId].GetShip();
+					tmp.AISStatic = new ClassAStatic();
+					tmp.AISType             = "Class A";
+					tmp.MMSI                = (int)message.UserId;
+					tmp.Nationality         = AISMessageBase.NationNumber[message.MID][0];
+					tmp.MID                 = (int)message.MID;
+					tmp.PositionAccuracy	= AISMessageBase.PositionFixingDevice[(int)message.TypeOfElectronicPositionFixingDevice];
+					tmp.ReceivingDate		= message.ReceivingDate;
+
+					(tmp.AISStatic as ClassAStatic).IMO                 = (int)message.IMONumber;
+					(tmp.AISStatic as ClassAStatic).Callsign            = AISMessageBase.Convert6bitAscII(message.CallSine, 7);
+					(tmp.AISStatic as ClassAStatic).ShipName            = AISMessageBase.Convert6bitAscII(message.Name, 20);
+					(tmp.AISStatic as ClassAStatic).DestinationPort     = AISMessageBase.Convert6bitAscII(message.Destination, 20);
+					(tmp.AISStatic as ClassAStatic).ShipLength          = message.ShipLength;
+					(tmp.AISStatic as ClassAStatic).ShipWidth           = message.ShipWidth;
+					(tmp.AISStatic as ClassAStatic).TypeOfShip          = AISMessageBase.ConvertCargoType((int)message.TypeOfShipAndCargoType);
+					(tmp.AISStatic as ClassAStatic).TargetDraft         = (float)message.MaximumPresentStaticDraught / 10f;
+					(tmp.AISStatic as ClassAStatic).ETA                 = String.Format("{0:00}.{1:00} {2:00}:{3:00}", message.ETAMonth, message.ETADay, message.ETAHour, message.ETAMinute);
+					DicShip[(int)message.UserId].SetShip(tmp);
+				}
+				else{ 
+					DicShip[(int)message.UserId].MMSI                = (int)message.UserId;
+					DicShip[(int)message.UserId].AISType             = "Class A";
+					DicShip[(int)message.UserId].IMO                 = (int)message.IMONumber;
+					DicShip[(int)message.UserId].Callsign            = AISMessageBase.Convert6bitAscII(message.CallSine, 7);
+					DicShip[(int)message.UserId].ShipName            = AISMessageBase.Convert6bitAscII(message.Name, 20);
+					DicShip[(int)message.UserId].DestinationPort     = AISMessageBase.Convert6bitAscII(message.Destination, 20);
+					DicShip[(int)message.UserId].ShipLength          = message.ShipLength;
+					DicShip[(int)message.UserId].ShipWidth           = message.ShipWidth;
+					DicShip[(int)message.UserId].TypeOfShip          = AISMessageBase.ConvertCargoType((int)message.TypeOfShipAndCargoType);
+					DicShip[(int)message.UserId].PositionAccuracy    = AISMessageBase.PositionFixingDevice[(int)message.TypeOfElectronicPositionFixingDevice];
+					DicShip[(int)message.UserId].ReceivingDate       = message.ReceivingDate;
+					DicShip[(int)message.UserId].TargetDraft         = (float)message.MaximumPresentStaticDraught/10f;
+					DicShip[(int)message.UserId].ETA                 = String.Format("{0:00}.{1:00} {2:00}:{3:00}", message.ETAMonth, message.ETADay, message.ETAHour, message.ETAMinute);
+				}
                 if (SelectedItem != null)
                 {
                     if (message.UserId == SelectedItem.MMSI)
@@ -871,33 +930,50 @@ namespace AISParser.ViewModel
 
             if (!DicShip.ContainsKey((int)message.UserId))
             {
-                DicShip.Add((int)message.UserId, new ShipViewModel(new Ship()
-                {
-                    MMSI                = (int)message.UserId,
-                    AISType             = "Base Station",
-                    Nationality         = AISMessageBase.NationNumber[message.MID][0],
-                    MID                 = (int)message.MID,
-                    PositionAccuracyD   = positionAccuracy,
-                    PositionAccuracy    = AISMessageBase.PositionFixingDevice[(int)message.TypeOfElectronicPositionFixingDevice],
-                    Longtitude          = ConvertCoord(longtitude),
-                    Latitude            = ConvertCoord(latitude,false),
-                    IsBaseStation       = true,
-                    ReceivingDate       = message.ReceivingDate,
-                }));
+				AISBase aisBase = new AISBaseStation();
+				aisBase.AISDynamic = new BaseStationDynamic();
+				aisBase.MMSI                = (int)message.UserId;
+                aisBase.AISType             = "Base Station";
+                aisBase.Nationality         = AISMessageBase.NationNumber[message.MID][0];
+                aisBase.MID                 = (int)message.MID;
+				aisBase.PositionAccuracy	= AISMessageBase.PositionFixingDevice[(int)message.TypeOfElectronicPositionFixingDevice];
+				aisBase.ReceivingDate		= message.ReceivingDate;
+
+				aisBase.AISDynamic.PositionAccuracyD   = positionAccuracy;
+                aisBase.AISDynamic.Longtitude          = ConvertCoord(longtitude);
+                aisBase.AISDynamic.Latitude            = ConvertCoord(latitude,false);
+				DicShip.Add((int)message.UserId, new ShipViewModel(aisBase));
                 ShipCollection.Add((DicShip[(int)message.UserId]));
 
             }
             else
             {
+				if (DicShip[(int)message.UserId].GetShip().AISDynamic == null)
+				{
+					AISBase tmp = DicShip[(int)message.UserId].GetShip();
+					tmp.AISDynamic			= new BaseStationDynamic();
+					tmp.MMSI				= (int)message.UserId;
+					tmp.AISType				= "Base Station";
+					tmp.Nationality			= AISMessageBase.NationNumber[message.MID][0];
+					tmp.MID					= (int)message.MID;
+					tmp.PositionAccuracy	= AISMessageBase.PositionFixingDevice[(int)message.TypeOfElectronicPositionFixingDevice];
+					tmp.ReceivingDate		= message.ReceivingDate;
 
-                DicShip[(int)message.UserId].MMSI                = (int)message.UserId;
-                DicShip[(int)message.UserId].AISType             = "Base Station";
-                DicShip[(int)message.UserId].PositionAccuracyD   = positionAccuracy;
-                DicShip[(int)message.UserId].PositionAccuracy    = AISMessageBase.PositionFixingDevice[(int)message.TypeOfElectronicPositionFixingDevice];
-                DicShip[(int)message.UserId].Longtitude          = ConvertCoord(longtitude);
-                DicShip[(int)message.UserId].Latitude            = ConvertCoord(latitude,false);
-                DicShip[(int)message.UserId].IsBaseStation       = true;
-                DicShip[(int)message.UserId].ReceivingDate       = message.ReceivingDate;
+					tmp.AISDynamic.PositionAccuracyD	= positionAccuracy;
+					tmp.AISDynamic.Longtitude			= ConvertCoord(longtitude);
+					tmp.AISDynamic.Latitude				= ConvertCoord(latitude, false);
+					DicShip[(int)message.UserId].SetShip(tmp);
+				}
+				else
+				{
+					DicShip[(int)message.UserId].MMSI = (int)message.UserId;
+					DicShip[(int)message.UserId].AISType = "Base Station";
+					DicShip[(int)message.UserId].PositionAccuracyD = positionAccuracy;
+					DicShip[(int)message.UserId].PositionAccuracy = AISMessageBase.PositionFixingDevice[(int)message.TypeOfElectronicPositionFixingDevice];
+					DicShip[(int)message.UserId].Longtitude = ConvertCoord(longtitude);
+					DicShip[(int)message.UserId].Latitude = ConvertCoord(latitude, false);
+					DicShip[(int)message.UserId].ReceivingDate = message.ReceivingDate;
+				}
                 if (SelectedItem != null)
                 {
                     if (message.UserId == SelectedItem.MMSI)
@@ -921,35 +997,55 @@ namespace AISParser.ViewModel
 
             if (!DicShip.ContainsKey((int)message.UserId))
             {
-                DicShip.Add((int)message.UserId, new ShipViewModel(new Ship()
-                {
-                    AISType             = "AirCraft",
-                    MMSI                = (int)message.UserId,
-                    Nationality         = AISMessageBase.NationNumber[message.MID][0],
-                    MID                 = (int)message.MID,
-                    COG                 = message.COG / 10f,
-                    PositionAccuracyD   = positionAccuracy,
-                    Longtitude          = ConvertCoord(longtitude),
-                    Latitude            = ConvertCoord(latitude,false),
-                    TimeStamp           = message.TimeStemp.ToString(),
-                    SOG                 = message.SOG / 10f,
-                    ReceivingDate       = message.ReceivingDate,
-                    IsAirCraft          = true
-                }));
+				AISBase aIsBase = new AISAirCraft();
+				aIsBase.AISDynamic			= new AirCraftDynamic();
+				aIsBase.AISType             = "AirCraft";
+                aIsBase.MMSI                = (int)message.UserId;
+                aIsBase.Nationality         = AISMessageBase.NationNumber[message.MID][0];
+                aIsBase.MID					= (int)message.MID;
+				aIsBase.ReceivingDate		= message.ReceivingDate;
+
+				(aIsBase.AISDynamic as AirCraftDynamic).COG                 = message.COG / 10f;
+                (aIsBase.AISDynamic as AirCraftDynamic).PositionAccuracyD   = positionAccuracy;
+                (aIsBase.AISDynamic as AirCraftDynamic).Longtitude          = ConvertCoord(longtitude);
+                (aIsBase.AISDynamic as AirCraftDynamic).Latitude            = ConvertCoord(latitude,false);
+                (aIsBase.AISDynamic as AirCraftDynamic).TimeStamp           = message.TimeStemp.ToString();
+                (aIsBase.AISDynamic as AirCraftDynamic).SOG                 = message.SOG / 10f;
+                DicShip.Add((int)message.UserId, new ShipViewModel(aIsBase));
                 ShipCollection.Add((DicShip[(int)message.UserId]));
             }
             else
             {
-                DicShip[(int)message.UserId].AISType             = "AirCraft";
-                DicShip[(int)message.UserId].MMSI                = (int)message.UserId;
-                DicShip[(int)message.UserId].COG                 = message.COG / 10f;
-                DicShip[(int)message.UserId].PositionAccuracyD   = positionAccuracy;
-                DicShip[(int)message.UserId].Longtitude          = ConvertCoord(longtitude);
-                DicShip[(int)message.UserId].Latitude            = ConvertCoord(latitude,false);
-                DicShip[(int)message.UserId].TimeStamp           = message.TimeStemp.ToString();
-                DicShip[(int)message.UserId].SOG                 = message.SOG / 10f;
-                DicShip[(int)message.UserId].ReceivingDate       = message.ReceivingDate;
-                DicShip[(int)message.UserId].IsAirCraft          = true;
+				if (DicShip[(int)message.UserId].GetShip().AISDynamic == null)
+				{
+					AISBase tmp = DicShip[(int)message.UserId].GetShip();
+					tmp.AISDynamic			= new AirCraftDynamic();
+					tmp.AISType             = "AirCraft";
+					tmp.MMSI                = (int)message.UserId;
+					tmp.Nationality         = AISMessageBase.NationNumber[message.MID][0];
+					tmp.MID					= (int)message.MID;
+					tmp.ReceivingDate		= message.ReceivingDate;
+
+					(tmp.AISDynamic as AirCraftDynamic).COG                 = message.COG / 10f;
+					(tmp.AISDynamic as AirCraftDynamic).PositionAccuracyD   = positionAccuracy;
+					(tmp.AISDynamic as AirCraftDynamic).Longtitude          = ConvertCoord(longtitude);
+					(tmp.AISDynamic as AirCraftDynamic).Latitude            = ConvertCoord(latitude,false);
+					(tmp.AISDynamic as AirCraftDynamic).TimeStamp           = message.TimeStemp.ToString();
+					(tmp.AISDynamic as AirCraftDynamic).SOG                 = message.SOG / 10f;
+					DicShip[(int)message.UserId].SetShip(tmp);
+				}
+				else
+				{
+					DicShip[(int)message.UserId].AISType = "AirCraft";
+					DicShip[(int)message.UserId].MMSI = (int)message.UserId;
+					DicShip[(int)message.UserId].COG = message.COG / 10f;
+					DicShip[(int)message.UserId].PositionAccuracyD = positionAccuracy;
+					DicShip[(int)message.UserId].Longtitude = ConvertCoord(longtitude);
+					DicShip[(int)message.UserId].Latitude = ConvertCoord(latitude, false);
+					DicShip[(int)message.UserId].TimeStamp = message.TimeStemp.ToString();
+					DicShip[(int)message.UserId].SOG = message.SOG / 10f;
+					DicShip[(int)message.UserId].ReceivingDate = message.ReceivingDate;
+				}
                 if (SelectedItem != null)
                 {
                     if (message.UserId == SelectedItem.MMSI)
@@ -973,30 +1069,42 @@ namespace AISParser.ViewModel
             float latitude          = message.Latitude * AISMessageBase.LongitudeLatitudeRatio;
             if (!DicShip.ContainsKey((int)message.UserId))
             {
-               
-                DicShip.Add((int)message.UserId, new ShipViewModel(new Ship()
-                {
-                    MMSI                = (int)message.UserId,
-                    PositionAccuracyD   = positionAccuracy,
-                    AISType             = "Aids to Navigation",
-                    Nationality         = AISMessageBase.NationNumber[message.MID][0],
-                    MID                 = (int)message.MID,
-                    ShipName            = AISMessageBase.Convert6bitAscII(message.NameOfAidsToNavigation, 20) + AISMessageBase.Convert6bitAscII(message.NameToAidToNavigationExtension, 14),
-                    PositionAccuracy    = AISMessageBase.PositionFixingDevice[(int)message.TypeOfElectronicPositionFixingDevice],
-                    Longtitude          = ConvertCoord(longtitude),
-                    Latitude            = ConvertCoord(latitude,false),
-                    TimeStamp           = message.TimeStemp.ToString(),
-                    ReceivingDate       = message.ReceivingDate,
-                    ShipLength          = message.ShipLength,
-                    ShipWidth           = message.ShipWidth,
-                    IsAtoN              = true
+				AISBase aisBase = new AISAtoN();
+				aisBase.AISStatic = new AtoNStatic();
+				aisBase.AISDynamic= new AtoNDynamic();
+				aisBase.MMSI                = (int)message.UserId;
+                aisBase.PositionAccuracy	= positionAccuracy;
+                aisBase.AISType             = "Aids to Navigation";
+                aisBase.Nationality         = AISMessageBase.NationNumber[message.MID][0];
+                aisBase.MID					= (int)message.MID;
+				aisBase.ReceivingDate		= message.ReceivingDate;
 
-                }));
+				(aisBase.AISDynamic as AtoNDynamic).PositionAccuracyD   = AISMessageBase.PositionFixingDevice[(int)message.TypeOfElectronicPositionFixingDevice];
+				(aisBase.AISDynamic as AtoNDynamic).Longtitude          = ConvertCoord(longtitude);
+				(aisBase.AISDynamic as AtoNDynamic).Latitude            = ConvertCoord(latitude,false);
+				(aisBase.AISDynamic as AtoNDynamic).TimeStamp           = message.TimeStemp.ToString();
+                (aisBase.AISStatic as AtoNStatic).ShipLength			= message.ShipLength;
+                (aisBase.AISStatic as AtoNStatic).ShipWidth				= message.ShipWidth;
+				(aisBase.AISStatic as AtoNStatic).ShipName				= AISMessageBase.Convert6bitAscII(message.NameOfAidsToNavigation, 20) + AISMessageBase.Convert6bitAscII(message.NameToAidToNavigationExtension, 14);
+
+                DicShip.Add((int)message.UserId, new ShipViewModel(aisBase));
                 ShipCollection.Add((DicShip[(int)message.UserId]));
             }
             else
             {
-                DicShip[(int)message.UserId].MMSI                = (int)message.UserId;
+				if (DicShip[(int)message.UserId].GetShip().AISDynamic == null)
+				{
+					AISBase tmp = DicShip[(int)message.UserId].GetShip();
+					tmp.AISDynamic = new AtoNDynamic();
+					DicShip[(int)message.UserId].SetShip(tmp);
+				}
+				if (DicShip[(int)message.UserId].GetShip().AISStatic == null)
+				{
+					AISBase tmp = DicShip[(int)message.UserId].GetShip();
+					tmp.AISStatic = new AtoNStatic();
+					DicShip[(int)message.UserId].SetShip(tmp);
+				}
+				DicShip[(int)message.UserId].MMSI                = (int)message.UserId;
                 DicShip[(int)message.UserId].ShipName            = AISMessageBase.Convert6bitAscII(message.NameOfAidsToNavigation, 20) + AISMessageBase.Convert6bitAscII(message.NameToAidToNavigationExtension, 14);
                 DicShip[(int)message.UserId].AISType             = "Aids to Navigation";
                 DicShip[(int)message.UserId].PositionAccuracyD   = positionAccuracy;
@@ -1005,7 +1113,6 @@ namespace AISParser.ViewModel
                 DicShip[(int)message.UserId].Latitude            = ConvertCoord(latitude,false);
                 DicShip[(int)message.UserId].TimeStamp           = message.TimeStemp.ToString();
                 DicShip[(int)message.UserId].ReceivingDate       = message.ReceivingDate;
-                DicShip[(int)message.UserId].IsAtoN              = true;
                 DicShip[(int)message.UserId].ShipLength          = message.ShipLength;
                 DicShip[(int)message.UserId].ShipWidth           = message.ShipWidth;
                 if (SelectedItem != null)
@@ -1031,36 +1138,59 @@ namespace AISParser.ViewModel
 
             if (!DicShip.ContainsKey((int)message.UserId))
             {
-            
-                DicShip.Add((int)message.UserId, new ShipViewModel(new Ship()
-                {
-                    MMSI                = (int)message.UserId,
-                    AISType             = "Class B",
-                    Nationality         = AISMessageBase.NationNumber[message.MID][0],
-                    MID                 = (int)message.MID,
-                    PositionAccuracyD   = positionAccuracy,
-                    Longtitude          = ConvertCoord(longtitude),
-                    Latitude            = ConvertCoord(latitude,false),
-                    SOG                 = message.SOG / 10f,
-                    COG                 = message.COG / 10f,
-                    ShipHeadDirection   = message.TrueHeading.ToString(),
-                    TimeStamp           = message.TimeStemp.ToString(),
-                    ReceivingDate       = message.ReceivingDate
-                }));
+				AISBase aisBase = new AISClassB();
+				aisBase.AISDynamic = new ClassBDynamic();
+				aisBase.MMSI                = (int)message.UserId;
+                aisBase.AISType             = "Class B";
+                aisBase.Nationality         = AISMessageBase.NationNumber[message.MID][0];
+                aisBase.MID                 = (int)message.MID;
+				aisBase.ReceivingDate		= message.ReceivingDate;
+
+
+				(aisBase.AISDynamic as ClassBDynamic).PositionAccuracyD	  = positionAccuracy;
+                (aisBase.AISDynamic as ClassBDynamic).Longtitude          = ConvertCoord(longtitude);
+                (aisBase.AISDynamic as ClassBDynamic).Latitude            = ConvertCoord(latitude,false);
+                (aisBase.AISDynamic as ClassBDynamic).SOG                 = message.SOG / 10f;
+                (aisBase.AISDynamic as ClassBDynamic).COG                 = message.COG / 10f;
+                (aisBase.AISDynamic as ClassBDynamic).ShipHeadDirection   = message.TrueHeading.ToString();
+                (aisBase.AISDynamic as ClassBDynamic).TimeStamp           = message.TimeStemp.ToString();
+                DicShip.Add((int)message.UserId, new ShipViewModel(aisBase));
                 ShipCollection.Add((DicShip[(int)message.UserId]));
             }
             else
             {
-                DicShip[(int)message.UserId].MMSI                = (int)message.UserId;
-                DicShip[(int)message.UserId].AISType             = "Class B";
-                DicShip[(int)message.UserId].PositionAccuracyD   = positionAccuracy;
-                DicShip[(int)message.UserId].Longtitude          = ConvertCoord(longtitude);
-                DicShip[(int)message.UserId].Latitude            = ConvertCoord(latitude,false);
-                DicShip[(int)message.UserId].SOG                 = message.SOG / 10f;
-                DicShip[(int)message.UserId].COG                 = message.COG / 10f;
-                DicShip[(int)message.UserId].ShipHeadDirection   = message.TrueHeading.ToString();
-                DicShip[(int)message.UserId].TimeStamp           = message.TimeStemp.ToString();
-                DicShip[(int)message.UserId].ReceivingDate       = message.ReceivingDate;
+				if (DicShip[(int)message.UserId].GetShip().AISDynamic == null)
+				{
+					AISBase aisBase = DicShip[(int)message.UserId].GetShip();
+					aisBase.AISDynamic = new ClassBDynamic();
+					aisBase.MMSI                = (int)message.UserId;
+					aisBase.AISType             = "Class B";
+					aisBase.Nationality         = AISMessageBase.NationNumber[message.MID][0];
+					aisBase.MID                 = (int)message.MID;
+					aisBase.ReceivingDate		= message.ReceivingDate;
+
+
+					(aisBase.AISDynamic as ClassBDynamic).PositionAccuracyD	  = positionAccuracy;
+					(aisBase.AISDynamic as ClassBDynamic).Longtitude          = ConvertCoord(longtitude);
+					(aisBase.AISDynamic as ClassBDynamic).Latitude            = ConvertCoord(latitude,false);
+					(aisBase.AISDynamic as ClassBDynamic).SOG                 = message.SOG / 10f;
+					(aisBase.AISDynamic as ClassBDynamic).COG                 = message.COG / 10f;
+					(aisBase.AISDynamic as ClassBDynamic).ShipHeadDirection   = message.TrueHeading.ToString();
+					(aisBase.AISDynamic as ClassBDynamic).TimeStamp           = message.TimeStemp.ToString();
+					DicShip[(int)message.UserId].SetShip(aisBase);
+				}
+				else { 
+					DicShip[(int)message.UserId].MMSI                = (int)message.UserId;
+					DicShip[(int)message.UserId].AISType             = "Class B";
+					DicShip[(int)message.UserId].PositionAccuracyD   = positionAccuracy;
+					DicShip[(int)message.UserId].Longtitude          = ConvertCoord(longtitude);
+					DicShip[(int)message.UserId].Latitude            = ConvertCoord(latitude,false);
+					DicShip[(int)message.UserId].SOG                 = message.SOG / 10f;
+					DicShip[(int)message.UserId].COG                 = message.COG / 10f;
+					DicShip[(int)message.UserId].ShipHeadDirection   = message.TrueHeading.ToString();
+					DicShip[(int)message.UserId].TimeStamp           = message.TimeStemp.ToString();
+					DicShip[(int)message.UserId].ReceivingDate       = message.ReceivingDate;
+				}
                 if (SelectedItem != null)
                 {
                     if (message.UserId == SelectedItem.MMSI)
@@ -1081,34 +1211,6 @@ namespace AISParser.ViewModel
             int partNumber = (int)message.PartNumber;
             if (!DicShip.ContainsKey((int)message.UserId))
             {
-                if (partNumber == 0)
-                {
-                 
-                    DicShip.Add((int)message.UserId, new ShipViewModel(new Ship()
-                    {
-                        MMSI        = (int)message.UserId,
-                        Nationality = AISMessageBase.NationNumber[message.MID][0],
-                        ShipName    = AISMessageBase.Convert6bitAscII(message.Name, 20)
-                    }));
-                    ShipCollection.Add((DicShip[(int)message.UserId]));
-                }
-                else
-                {
-                    
-                    DicShip.Add((int)message.UserId, new ShipViewModel(new Ship()
-                    {
-                        MMSI                = (int)message.UserId,
-                        Nationality         = AISMessageBase.NationNumber[message.MID][0],
-                        MID                 = (int)message.MID,
-                        Callsign            = AISMessageBase.Convert6bitAscII(message.CallSign, 7),
-                        TypeOfShip          = AISMessageBase.ConvertCargoType((int)message.TypeOfShipAndCargoType),
-                        ShipLength          = message.ShipLength,
-                        ShipWidth           = message.ShipWidth,
-                        PositionAccuracy    = AISMessageBase.PositionFixingDevice[(int)message.TypeOfElectronicPostition]
-
-                    }));
-                    ShipCollection.Add((DicShip[(int)message.UserId]));
-                }
             }
             else
             {
@@ -1117,17 +1219,48 @@ namespace AISParser.ViewModel
 
                     DicShip[(int)message.UserId].MMSI        = (int)message.UserId;
                     DicShip[(int)message.UserId].ShipName    = AISMessageBase.Convert6bitAscII(message.Name, 20);
-                    
-                }
-                else
+					DicShip[(int)message.UserId].MID		 = (int)message.MID;
+					DicShip[(int)message.UserId].Nationality = AISMessageBase.NationNumber[message.MID][0];
+				}
+				else
                 {
+					if (DicShip[(int)message.UserId].GetShip().AISStatic == null)
+					{
+						AISBase aisBase = DicShip[(int)message.UserId].GetShip();
+						aisBase.MMSI = (int)message.UserId;
+						aisBase.Nationality = AISMessageBase.NationNumber[message.MID][0];
+						aisBase.MID = (int)message.MID;
+						aisBase.PositionAccuracy = AISMessageBase.PositionFixingDevice[(int)message.TypeOfElectronicPostition];
 
-                    DicShip[(int)message.UserId].MMSI                = (int)message.UserId;
-                    DicShip[(int)message.UserId].Callsign            = AISMessageBase.Convert6bitAscII(message.CallSign, 7);
-                    DicShip[(int)message.UserId].TypeOfShip          = AISMessageBase.ConvertCargoType((int)message.TypeOfShipAndCargoType);
-                    DicShip[(int)message.UserId].ShipLength          = message.ShipLength;
-                    DicShip[(int)message.UserId].ShipWidth           = message.ShipWidth;
-                    DicShip[(int)message.UserId].PositionAccuracy    = AISMessageBase.PositionFixingDevice[(int)message.TypeOfElectronicPostition];
+						if (aisBase.AISType=="Class A")
+						{
+							aisBase.AISStatic = new ClassAStatic();
+
+							(aisBase.AISStatic as ClassAStatic).Callsign = AISMessageBase.Convert6bitAscII(message.CallSign, 7);
+							(aisBase.AISStatic as ClassAStatic).TypeOfShip = AISMessageBase.ConvertCargoType((int)message.TypeOfShipAndCargoType);
+							(aisBase.AISStatic as ClassAStatic).ShipLength = message.ShipLength;
+							(aisBase.AISStatic as ClassAStatic).ShipWidth = message.ShipWidth;
+						}
+						else if(aisBase.AISType =="Class B")
+						{
+							aisBase.AISStatic = new ClassBStatic();
+							(aisBase.AISStatic as ClassBStatic).Callsign = AISMessageBase.Convert6bitAscII(message.CallSign, 7);
+							(aisBase.AISStatic as ClassBStatic).TypeOfShip = AISMessageBase.ConvertCargoType((int)message.TypeOfShipAndCargoType);
+							(aisBase.AISStatic as ClassBStatic).ShipLength = message.ShipLength;
+							(aisBase.AISStatic as ClassBStatic).ShipWidth = message.ShipWidth;
+						}
+					}
+					else
+					{
+						DicShip[(int)message.UserId].MMSI = (int)message.UserId;
+						DicShip[(int)message.UserId].MID = (int)message.MID;
+						DicShip[(int)message.UserId].Callsign = AISMessageBase.Convert6bitAscII(message.CallSign, 7);
+						DicShip[(int)message.UserId].PositionAccuracy = AISMessageBase.PositionFixingDevice[(int)message.TypeOfElectronicPostition];
+
+						DicShip[(int)message.UserId].TypeOfShip = AISMessageBase.ConvertCargoType((int)message.TypeOfShipAndCargoType);
+						DicShip[(int)message.UserId].ShipLength = message.ShipLength;
+						DicShip[(int)message.UserId].ShipWidth = message.ShipWidth;
+					}
                    
                 }
                 if (SelectedItem != null)

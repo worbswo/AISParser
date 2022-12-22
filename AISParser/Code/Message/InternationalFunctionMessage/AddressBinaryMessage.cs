@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code.Message.InternationalFunctionMessage
 {
-    public class AddressBinaryMessage : InternationalFunctionMessageBase
+	sealed public class AddressBinaryMessage : InternationalFunctionMessageBase
     {
         #region Property
         public int MessageId { get; set; }

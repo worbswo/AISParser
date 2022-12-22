@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code.Message
 {
-    public class StandardClassBEquipment : AISMessageBase
+	sealed public class StandardClassBEquipment : AISMessageBase
     {
 
         #region Property

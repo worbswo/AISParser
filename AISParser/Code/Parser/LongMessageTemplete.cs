@@ -9,7 +9,7 @@ namespace AISParser.Code.Parser
     /// <summary>
     /// 연속된 AIS 메세지를 저장하기 위한 클래스
     /// </summary>
-    public class LongMessageTemplete
+    sealed public class LongMessageTemplete
     {
         public string Identify { get; set; }
         public byte[] SixBitMessages { get; set; }

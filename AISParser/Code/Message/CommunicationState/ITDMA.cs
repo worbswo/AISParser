@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code.Message.CommunicationState
 {
-    public class ITDMA
+	sealed public class ITDMA
     {
         #region Property
         public byte SyncState { get; set; } = new byte();

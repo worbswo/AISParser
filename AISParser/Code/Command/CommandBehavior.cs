@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace AISParser.Code.Command
 {
-    public class CommandBehavior
+	sealed public class CommandBehavior
     {
 
         /// <summary>

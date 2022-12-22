@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code.Message
 {
-  
-    public class InterrogationMessage :AISMessageBase
+
+	sealed public class InterrogationMessage :AISMessageBase
     {
         #region Property
         public uint[] DestinationId { get; set; } = new uint[2];

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code.Message.InternationalFunctionMessage
 {
-    public class AcknowledgementToAddressedBinaryMessage : InternationalFunctionMessageBase
+	sealed public class AcknowledgementToAddressedBinaryMessage : InternationalFunctionMessageBase
     {
         #region Property
         public ushort DACCodeOfReceivedFunctianlaMessage { get; set; }

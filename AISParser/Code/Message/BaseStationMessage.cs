@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code.Message
 {
-    public class BaseStationMessage :AISMessageBase
+	sealed public class BaseStationMessage :AISMessageBase
     {
         #region Property
         public ushort UTCYear { get; set; }

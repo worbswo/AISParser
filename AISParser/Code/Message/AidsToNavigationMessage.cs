@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Code.Message
 {
-    public class AidsToNavigationMessage :AISMessageBase
+	sealed public class AidsToNavigationMessage :AISMessageBase
     {
         #region Property
         public byte TypeOfAidsToNavigation {get; set; }

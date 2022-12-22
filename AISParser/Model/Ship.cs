@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AISParser.Model
 {
-    public class Ship
+	sealed public class Ship
     {
         #region Property
         public int MID { get; set; } = 999;
