@@ -22,6 +22,7 @@ using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -40,18 +41,20 @@ namespace AISParser.ViewModel
         private bool _isAirCraft = false;
         private bool _isClassA = false;
         private bool _isClassB = false;
-
-        private string _searchTxt;
+        
+		private string _searchTxt;
         private string _targetText;
-
+		private string _statusText;
+		private string _trackingMMSIText;
         private int _selectedIndex;
-
+		private int _listSelectedIndex;
         private ICommand _doubleClickedCommand;
         private ICommand _searchCommand;
         private ICommand _keyDownCommand;
         private ICommand _sortCommand;
         private ICommand _listViewItemMouseDownCommand;
-        private ShipViewModel _shipViewModel;
+
+		private ShipViewModel _shipViewModel;
 
         private Dictionary<string, string> _dicHeaderName = new Dictionary<string, string>();
     #endregion
@@ -64,7 +67,7 @@ namespace AISParser.ViewModel
         Dictionary<string, Predicate<ShipViewModel>> Filters { get; set; } = new Dictionary<string, Predicate<ShipViewModel>>(); //리스트뷰 필터
         Thread receiveMessageThread { get; set; }
         AISMessageBase AISMessageBase { get; set; }
-
+		internal bool isPopupEnable { get; set; } = false;
         private Dictionary<string, string> OriginHeaderName { get; set; } = new Dictionary<string, string>()
         {
             {"ReceivingDate","수신 일시"},    {"MMSI","물표 ID" },      {"AISType","타입" },
@@ -93,6 +96,30 @@ namespace AISParser.ViewModel
                 NotifyPropertyChanged("DicHeaderName");
             }
         }
+		public string TrackingMMSIText
+		{
+			get
+			{
+				return _trackingMMSIText;
+			}
+			set
+			{
+				_trackingMMSIText = value;
+				OnPropertyChanged("TrackingMMSIText");
+			}
+		}
+		public string StatusText
+		{
+			get
+			{
+				return _statusText;
+			}
+			set
+			{
+				_statusText = value;
+				OnPropertyChanged("StatusText");
+			}
+		}
         public int SelectedIndex
         {
             get { return _selectedIndex; }
@@ -241,9 +268,12 @@ namespace AISParser.ViewModel
                 }
             }
         }
-      
+		public bool IsTrakingEnbale { get; set; }= false;
+	
+		
 
-        internal MessageParser MessageParser { get; set; }
+
+		internal MessageParser MessageParser { get; set; }
         private ObservableCollection<ShipViewModel> ShipCollection { get; set; }
         private CollectionViewSource ShipCollectionViewSource { get; set; }
         public ICollectionView ShipCollectionView
@@ -275,10 +305,27 @@ namespace AISParser.ViewModel
                 }
             }
         }
-     #endregion
+		public int ListSelectedIndex
+		{
+			get
+			{
 
-    #region Construct
-        public MainWindowViewModel()
+				return _listSelectedIndex;
+			}
+			set
+			{
+				
+					_listSelectedIndex = value;
+
+					OnPropertyChanged("ListSelectedIndex");
+				
+			}
+		}
+		
+		#endregion
+
+		#region Construct
+		public MainWindowViewModel()
         {
 
             AISMessageBase = new AISMessageBase();
@@ -422,8 +469,21 @@ namespace AISParser.ViewModel
                     TargetText = ShipCollectionViewSource.View.Cast<ShipViewModel>().Count().ToString();
 
                 });
+				if (IsTrakingEnbale)
+				{
+					if (TrackingMMSIText == AISMessageBase.UserId.ToString())
+					{
+						ListSelectedIndex = 0;
+						SelectedItem = DicShip[(int)AISMessageBase.UserId];
 
-                Thread.Sleep(1);
+						Task.Run(() =>
+						{
+							MessageBox.Show(StatusText, "INFO");
+						});
+
+					}
+				}
+				Thread.Sleep(1);
             }
 
         }
@@ -786,7 +846,7 @@ namespace AISParser.ViewModel
 				DicShip.Add((int)message.UserId, new ShipViewModel(aisBase));
 
                 ShipCollection.Add((DicShip[(int)message.UserId]));
-                
+				StatusText = String.Format("[NEW][{0}] : Class A \n", aisBase.MMSI);
             }
             else
             {
@@ -825,7 +885,9 @@ namespace AISParser.ViewModel
 					DicShip[(int)message.UserId].ReceivingDate       = message.ReceivingDate;
 					DicShip[(int)message.UserId].NaviStatus          = AISMessageBase.NaviSatus[(int)message.NavigationalStatus];
 				}
-                if (SelectedItem != null)
+				StatusText = String.Format("[UPDATE][{0}] : Class A Dynamic info\n", DicShip[(int)message.UserId].MMSI);
+
+				if (SelectedItem != null)
                 {
                     if (message.UserId == SelectedItem.MMSI)
                     {
@@ -834,6 +896,7 @@ namespace AISParser.ViewModel
                     }
                 }
             }
+			
         }
         /// <summary>
         /// 파싱한 messageType 5 을 뷰를 위한 데이터로 변환
@@ -866,9 +929,10 @@ namespace AISParser.ViewModel
 				(aisBase.AISStatic as ClassAStatic).ETA                 = String.Format("{0:00}.{1:00} {2:00}:{3:00}", message.ETAMonth, message.ETADay, message.ETAHour, message.ETAMinute);
 				DicShip.Add((int)message.UserId, new ShipViewModel(aisBase));
                 ShipCollection.Add((DicShip[(int)message.UserId]));
+				StatusText = String.Format("[NEW][{0}] : Class A \n", aisBase.MMSI);
 
-            }
-            else
+			}
+			else
             {
 				if (DicShip[(int)message.UserId].GetShip().AISStatic == null)
 				{
@@ -907,7 +971,9 @@ namespace AISParser.ViewModel
 					DicShip[(int)message.UserId].TargetDraft         = (float)message.MaximumPresentStaticDraught/10f;
 					DicShip[(int)message.UserId].ETA                 = String.Format("{0:00}.{1:00} {2:00}:{3:00}", message.ETAMonth, message.ETADay, message.ETAHour, message.ETAMinute);
 				}
-                if (SelectedItem != null)
+				StatusText = String.Format("[UPDATE][{0}] : Class A Static info\n", DicShip[(int)message.UserId].MMSI);
+
+				if (SelectedItem != null)
                 {
                     if (message.UserId == SelectedItem.MMSI)
                     {
@@ -944,9 +1010,10 @@ namespace AISParser.ViewModel
                 aisBase.AISDynamic.Latitude            = ConvertCoord(latitude,false);
 				DicShip.Add((int)message.UserId, new ShipViewModel(aisBase));
                 ShipCollection.Add((DicShip[(int)message.UserId]));
+				StatusText = String.Format("[NEW][{0}] : Base Station\n", aisBase.MMSI);
 
-            }
-            else
+			}
+			else
             {
 				if (DicShip[(int)message.UserId].GetShip().AISDynamic == null)
 				{
@@ -974,7 +1041,9 @@ namespace AISParser.ViewModel
 					DicShip[(int)message.UserId].Latitude = ConvertCoord(latitude, false);
 					DicShip[(int)message.UserId].ReceivingDate = message.ReceivingDate;
 				}
-                if (SelectedItem != null)
+				StatusText = String.Format("[UPDATE][{0}] : Base Station Dynamic Info\n", DicShip[(int)message.UserId].MMSI);
+
+				if (SelectedItem != null)
                 {
                     if (message.UserId == SelectedItem.MMSI)
                     {
@@ -997,24 +1066,26 @@ namespace AISParser.ViewModel
 
             if (!DicShip.ContainsKey((int)message.UserId))
             {
-				AISBase aIsBase = new AISAirCraft();
-				aIsBase.AISDynamic			= new AirCraftDynamic();
-				aIsBase.AISType             = "AirCraft";
-                aIsBase.MMSI                = (int)message.UserId;
-                aIsBase.Nationality         = AISMessageBase.NationNumber[message.MID][0];
-                aIsBase.MID					= (int)message.MID;
-				aIsBase.ReceivingDate		= message.ReceivingDate;
+				AISBase aisBase = new AISAirCraft();
+				aisBase.AISDynamic			= new AirCraftDynamic();
+				aisBase.AISType             = "AirCraft";
+                aisBase.MMSI                = (int)message.UserId;
+                aisBase.Nationality         = AISMessageBase.NationNumber[message.MID][0];
+                aisBase.MID					= (int)message.MID;
+				aisBase.ReceivingDate		= message.ReceivingDate;
 
-				(aIsBase.AISDynamic as AirCraftDynamic).COG                 = message.COG / 10f;
-                (aIsBase.AISDynamic as AirCraftDynamic).PositionAccuracyD   = positionAccuracy;
-                (aIsBase.AISDynamic as AirCraftDynamic).Longtitude          = ConvertCoord(longtitude);
-                (aIsBase.AISDynamic as AirCraftDynamic).Latitude            = ConvertCoord(latitude,false);
-                (aIsBase.AISDynamic as AirCraftDynamic).TimeStamp           = message.TimeStemp.ToString();
-                (aIsBase.AISDynamic as AirCraftDynamic).SOG                 = message.SOG / 10f;
-                DicShip.Add((int)message.UserId, new ShipViewModel(aIsBase));
+				(aisBase.AISDynamic as AirCraftDynamic).COG                 = message.COG / 10f;
+                (aisBase.AISDynamic as AirCraftDynamic).PositionAccuracyD   = positionAccuracy;
+                (aisBase.AISDynamic as AirCraftDynamic).Longtitude          = ConvertCoord(longtitude);
+                (aisBase.AISDynamic as AirCraftDynamic).Latitude            = ConvertCoord(latitude,false);
+                (aisBase.AISDynamic as AirCraftDynamic).TimeStamp           = message.TimeStemp.ToString();
+                (aisBase.AISDynamic as AirCraftDynamic).SOG                 = message.SOG / 10f;
+                DicShip.Add((int)message.UserId, new ShipViewModel(aisBase));
                 ShipCollection.Add((DicShip[(int)message.UserId]));
-            }
-            else
+				StatusText = String.Format("[NEW][{0}] :AirCraft\n", aisBase.MMSI);
+
+			}
+			else
             {
 				if (DicShip[(int)message.UserId].GetShip().AISDynamic == null)
 				{
@@ -1046,7 +1117,9 @@ namespace AISParser.ViewModel
 					DicShip[(int)message.UserId].SOG = message.SOG / 10f;
 					DicShip[(int)message.UserId].ReceivingDate = message.ReceivingDate;
 				}
-                if (SelectedItem != null)
+				StatusText = String.Format("[UPDATE][{0}] : AirCraft Dynamic Info\n", DicShip[(int)message.UserId].MMSI);
+
+				if (SelectedItem != null)
                 {
                     if (message.UserId == SelectedItem.MMSI)
                     {
@@ -1089,8 +1162,10 @@ namespace AISParser.ViewModel
 
                 DicShip.Add((int)message.UserId, new ShipViewModel(aisBase));
                 ShipCollection.Add((DicShip[(int)message.UserId]));
-            }
-            else
+				StatusText = String.Format("[NEW][{0}] : Aids to Navigation\n", aisBase.MMSI);
+
+			}
+			else
             {
 				if (DicShip[(int)message.UserId].GetShip().AISDynamic == null)
 				{
@@ -1115,7 +1190,9 @@ namespace AISParser.ViewModel
                 DicShip[(int)message.UserId].ReceivingDate       = message.ReceivingDate;
                 DicShip[(int)message.UserId].ShipLength          = message.ShipLength;
                 DicShip[(int)message.UserId].ShipWidth           = message.ShipWidth;
-                if (SelectedItem != null)
+				StatusText = String.Format("[UPDATE][{0}] : AtoN Dynamic and Static Info\n", DicShip[(int)message.UserId].MMSI);
+
+				if (SelectedItem != null)
                 {
                     if (message.UserId == SelectedItem.MMSI)
                     {
@@ -1156,8 +1233,10 @@ namespace AISParser.ViewModel
                 (aisBase.AISDynamic as ClassBDynamic).TimeStamp           = message.TimeStemp.ToString();
                 DicShip.Add((int)message.UserId, new ShipViewModel(aisBase));
                 ShipCollection.Add((DicShip[(int)message.UserId]));
-            }
-            else
+				StatusText = String.Format("[NEW][{0}] :Class B\n", aisBase.MMSI);
+
+			}
+			else
             {
 				if (DicShip[(int)message.UserId].GetShip().AISDynamic == null)
 				{
@@ -1191,7 +1270,9 @@ namespace AISParser.ViewModel
 					DicShip[(int)message.UserId].TimeStamp           = message.TimeStemp.ToString();
 					DicShip[(int)message.UserId].ReceivingDate       = message.ReceivingDate;
 				}
-                if (SelectedItem != null)
+				StatusText = String.Format("[UPDATE][{0}] : Class B Dynamic Info\n", DicShip[(int)message.UserId].MMSI);
+
+				if (SelectedItem != null)
                 {
                     if (message.UserId == SelectedItem.MMSI)
                     {
@@ -1216,11 +1297,11 @@ namespace AISParser.ViewModel
             {
                 if (partNumber == 0)
                 {
-
                     DicShip[(int)message.UserId].MMSI        = (int)message.UserId;
                     DicShip[(int)message.UserId].ShipName    = AISMessageBase.Convert6bitAscII(message.Name, 20);
 					DicShip[(int)message.UserId].MID		 = (int)message.MID;
 					DicShip[(int)message.UserId].Nationality = AISMessageBase.NationNumber[message.MID][0];
+					StatusText = String.Format("[Update][{0}] :Class B Static Info\n", DicShip[(int)message.UserId].MMSI);
 				}
 				else
                 {
@@ -1240,6 +1321,8 @@ namespace AISParser.ViewModel
 							(aisBase.AISStatic as ClassAStatic).TypeOfShip = AISMessageBase.ConvertCargoType((int)message.TypeOfShipAndCargoType);
 							(aisBase.AISStatic as ClassAStatic).ShipLength = message.ShipLength;
 							(aisBase.AISStatic as ClassAStatic).ShipWidth = message.ShipWidth;
+							StatusText = String.Format("[Update][{0}] :Class A Static Info\n", aisBase.MMSI);
+
 						}
 						else if(aisBase.AISType =="Class B")
 						{
@@ -1248,6 +1331,8 @@ namespace AISParser.ViewModel
 							(aisBase.AISStatic as ClassBStatic).TypeOfShip = AISMessageBase.ConvertCargoType((int)message.TypeOfShipAndCargoType);
 							(aisBase.AISStatic as ClassBStatic).ShipLength = message.ShipLength;
 							(aisBase.AISStatic as ClassBStatic).ShipWidth = message.ShipWidth;
+							StatusText = String.Format("[Update][{0}] :Class B Static Info\n", aisBase.MMSI);
+
 						}
 					}
 					else

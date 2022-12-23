@@ -174,7 +174,7 @@ namespace AISParser.Code.Parser
             if (!IsContinue)
             {
                 MessageID = AISMessageBase.ParsingMessageID(SixBitMessage);
-                if (MessageID <= 8 || MessageID == 11 || MessageID == 15 || MessageID == 18 || MessageID == 20 || MessageID == 21 || MessageID == 24)
+                if (MessageID <= 9 || MessageID == 11 || MessageID == 15 || MessageID == 18 || MessageID == 20 || MessageID == 21 || MessageID == 24)
                 {
                     int idx = (int)MessageID;
                     AISMessages[idx].MessageId = MessageID;

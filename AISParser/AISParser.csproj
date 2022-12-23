@@ -35,9 +35,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Expression.Interactions">
+      <HintPath>Dependency\Microsoft.Expression.Interactions.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Interactivity">
+      <HintPath>Dependency\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -84,6 +91,7 @@
     <Compile Include="Code\Parser\Interface\IArithmeticable.cs" />
     <Compile Include="Code\Parser\LongMessageTemplete.cs" />
     <Compile Include="Code\Parser\MessageParser.cs" />
+    <Compile Include="Code\ScrollSelectedItemIntoViewBehavior.cs" />
     <Compile Include="Code\StringToImageSourceConverter.cs" />
     <Compile Include="Code\TCP\AISData.cs" />
     <Compile Include="Code\TCP\TCPSocket.cs" />
@@ -177,7 +185,10 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Dependency\Microsoft.Expression.Interactions.dll" />
+    <EmbeddedResource Include="Dependency\System.Windows.Interactivity.dll" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\NationImage\ad.png" />
     <Resource Include="Resources\NationImage\ae.png" />

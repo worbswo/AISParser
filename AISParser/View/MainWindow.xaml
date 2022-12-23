@@ -5,14 +5,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:AISParser.View"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:command="clr-namespace:AISParser.Code.Command"
+    xmlns:Behavior="clr-namespace:AISParser.Code"
     mc:Ignorable="d"
     Title="MainWindow"
-    Height="700"
+    Height="800"
     Width="1100"
     ResizeMode="CanMinimize">
     <Window.Resources>
-        
+
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -22,10 +24,11 @@
                 Height="*"></RowDefinition>
             <RowDefinition
                 Height="70"></RowDefinition>
+            <RowDefinition
+                Height="40"></RowDefinition>
         </Grid.RowDefinitions>
-            
 
-            <GroupBox
+        <GroupBox
             Margin="10"
             BorderThickness="1"
             Header="검색">
@@ -41,7 +44,8 @@
                     <ColumnDefinition
                         Width="120"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <ComboBox SelectedIndex="{Binding SelectedIndex}"
+                <ComboBox
+                    SelectedIndex="{Binding SelectedIndex}"
                     VerticalAlignment="Center"
                     Margin="5,0,0,0">
                     <ComboBoxItem
@@ -90,11 +94,14 @@
             <ListView
                 Name="listView"
                 SelectedItem="{Binding SelectedItem}"
+                SelectedIndex="{Binding ListSelectedIndex}"
                 ItemsSource="{Binding ShipCollectionView}"
                 command:CommandBehavior.Event="MouseDoubleClick"
                 command:CommandBehavior.Command="{Binding DoubleClickedCommand}"
                 AlternationCount="2">
-            
+                <i:Interaction.Behaviors>
+                    <Behavior:ScrollSelectedItemIntoViewBehavior />
+                </i:Interaction.Behaviors>
                 <ListView.ItemContainerStyle>
                     <Style
                         TargetType="ListViewItem">
@@ -131,7 +138,7 @@
                         <Setter
                             Property="HorizontalContentAlignment"
                             Value="Stretch" />
-                        
+
                         <Setter
                             Property="Template">
                             <Setter.Value>
@@ -153,7 +160,7 @@
                                                 Name="SelectedRect"
                                                 Visibility="Collapsed"
                                                 Fill="{StaticResource ListItemSelectFill}" />
-                                            <GridViewRowPresenter/>
+                                            <GridViewRowPresenter />
                                         </Grid>
                                     </Border>
                                     <ControlTemplate.Triggers>
@@ -191,9 +198,9 @@
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
-                        
+
                     </Style>
-                    
+
                 </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
@@ -416,6 +423,43 @@
                     IsChecked="{Binding IsAirCraft}"></CheckBox>
             </StackPanel>
         </GroupBox>
+        <Grid
+            Grid.Row="3"
+            Margin="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition
+                    Width="0.3*"></ColumnDefinition>
+                <ColumnDefinition
+                    Width="0.5*"></ColumnDefinition>
+                <ColumnDefinition
+                    Width="0.2*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <StatusBar
+                BorderBrush="Black"
+                BorderThickness="1">
+                <StatusBarItem>
+                    <TextBlock
+                        Text="{Binding StatusText}"></TextBlock>
+                </StatusBarItem>
+            </StatusBar>
+            <CheckBox
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                VerticalContentAlignment="Center"
+                FontSize="20"
+                IsChecked="{Binding IsTrakingEnbale}"
+                >추 적 MMSI : </CheckBox>
+            <TextBox
+                Grid.Column="2"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Stretch"
+                Margin="5,0,0,0"
+                Text="{Binding TrackingMMSIText, Mode=TwoWay}">
+            </TextBox>
+        
+        </Grid>
 
     </Grid>
 </Window>
