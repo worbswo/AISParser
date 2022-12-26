@@ -48,11 +48,7 @@ namespace AISParser.ViewModel
 		private string _statusText;
 		private string _trackingMMSIText;
         private int _selectedIndex;
-        private ICommand _doubleClickedCommand;
-        private ICommand _searchCommand;
-        private ICommand _keyDownCommand;
-        private ICommand _sortCommand;
-        private ICommand _listViewItemMouseDownCommand;
+
 
 		private ShipViewModel _shipViewModel;
 
@@ -352,57 +348,37 @@ namespace AISParser.ViewModel
         {
             get
             {
-                if (_listViewItemMouseDownCommand == null)
-                {
-                    _listViewItemMouseDownCommand = new RelayCommand(ListViewItemMouseDownMethod, null);
-                }
-                return _listViewItemMouseDownCommand;
+                return GetCommand(()=> ListViewItemMouseDownCommand, ListViewItemMouseDownMethod);
             }
         }
         public ICommand SortCommand
         {
             get
-            {
-                if (_sortCommand == null)
-                {
-                    _sortCommand = new RelayCommand(SortMethod, null);
-                }
-                return _sortCommand;
-            }
-        }
+			{ 
+				return GetCommand(() => SortCommand, SortMethod);
+			}
+		}
         public ICommand KeyDownCommand
         {
             get
             {
-                if (_keyDownCommand == null)
-                {
-                    _keyDownCommand = new RelayCommand(KeyDownMethod, null);
-                }
-                return _keyDownCommand;
-            }
-        }
+				return GetCommand(() => KeyDownCommand, KeyDownMethod);
+			}
+		}
         public ICommand DoubleClickedCommand
         {
             get
             {
-                if (_doubleClickedCommand == null)
-                {
-                    _doubleClickedCommand = new RelayCommand(DoubleClickMethod, null);
-                }
-                return _doubleClickedCommand;
-            }
-        }
+				return GetCommand(() => DoubleClickedCommand, DoubleClickMethod);
+			}
+		}
         public ICommand SearchCommand
         {
             get
             {
-                if (_searchCommand == null)
-                {
-                    _searchCommand = new RelayCommand(SearchMethod, null);
-                }
-                return _searchCommand;
-            }
-        }
+				return GetCommand(() => SearchCommand, SearchMethod);
+			}
+		}
     #endregion
 
     #region Method
