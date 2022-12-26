@@ -42,17 +42,9 @@ namespace AISParser.ViewModel
         private bool _isAirCraft = false;
         private bool _isClassA = false;
         private bool _isClassB = false;
-        
-		private string _searchTxt;
-        private string _targetText;
-		private string _statusText;
-		private string _trackingMMSIText;
-        private int _selectedIndex;
-
 
 		private ShipViewModel _shipViewModel;
 
-        private Dictionary<string, string> _dicHeaderName = new Dictionary<string, string>();
     #endregion
 
     #region Property
@@ -84,64 +76,71 @@ namespace AISParser.ViewModel
         {
             get
             {
-                return _dicHeaderName;
+				return GetValue<Dictionary<string, string>>("DicHeaderName", new Dictionary<string, string>());
             }
             set
             {
-                _dicHeaderName = value;
-				OnPropertyChanged("DicHeaderName");
+				SetValue<Dictionary<string, string>>("DicHeaderName",value);
             }
         }
 		public string TrackingMMSIText
 		{
 			get
 			{
-				return _trackingMMSIText;
+				return GetValue<string>("TrackingMMSIText");
 			}
 			set
 			{
-				_trackingMMSIText = value;
-				OnPropertyChanged("TrackingMMSIText");
+				SetValue<string>("TrackingMMSIText",value);
 			}
 		}
 		public string StatusText
 		{
 			get
 			{
-				return _statusText;
+				return GetValue<string>("StatusText"); ;
 			}
 			set
 			{
-				_statusText = value;
-				OnPropertyChanged("StatusText");
+				SetValue<string>("StatusText", value);
+
 			}
 		}
         public int SelectedIndex
         {
-            get { return _selectedIndex; }
-           set
+            get
+			{
+				return GetValue<int>("SelectedIndex"); ;
+			}
+			set
             {
-                _selectedIndex= value;
-            }
-        }
+				SetValue<int>("SelectedIndex", value);
+			}
+		}
         public string SearchTxt
         {
-            get { return _searchTxt; }
-            set
+            get
+			{
+				return GetValue<string>("SearchTxt");
+			}
+			set
             {
-                _searchTxt = value;
-                OnPropertyChanged("SearchTxt");
-            }
-        }
+				SetValue<string>("SearchTxt", value);
+
+			}
+		}
         public string TargetText
         {
-            get { return _targetText; }
+            get
+			{
+				return GetValue<string>("TargetText");
+				
+			}
             set
             {
-                _targetText = value;
-                OnPropertyChanged("TargetText");
-            }
-        }
+				SetValue<string>("TargetText", value);
+			}
+		}
         public bool IsClassA
         {
             get

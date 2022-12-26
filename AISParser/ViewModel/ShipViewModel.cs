@@ -56,7 +56,6 @@ namespace AISParser.ViewModel
 				OnPropertyChanged("NaviStatus");
 				OnPropertyChanged("TimeStamp");
 				OnPropertyChanged("ShipDirection");
-
 			}
 		}
 		public int MID

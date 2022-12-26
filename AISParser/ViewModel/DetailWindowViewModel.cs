@@ -13,7 +13,6 @@ namespace AISParser.ViewModel
     {
 
         #region Field
-        private string _nationImageTxt;
         #endregion
 
         #region Property
@@ -21,16 +20,11 @@ namespace AISParser.ViewModel
         {
             get
             {
-                if(_nationImageTxt== null)
-                {
-                    _nationImageTxt = "kr.png";
-                }
-                return _nationImageTxt;
+				return GetValue<string>("NationImageTxt","kr.png");
             }
             set
             {
-                _nationImageTxt = value;
-                OnPropertyChanged("NationImageTxt");
+				SetValue<string>("NationImageTxt", value);
             }
         }
         public ShipViewModel ShipViewModel { get; set; } = new ShipViewModel();
