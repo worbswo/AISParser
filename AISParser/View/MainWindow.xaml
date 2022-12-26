@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:AISParser.View"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-    xmlns:command="clr-namespace:AISParser.Code.Command"
+    xmlns:command="clr-namespace:MyAttachedEventCommand;assembly=MyAttachedEventCommand"
     xmlns:Behavior="clr-namespace:AISParser.Code"
     mc:Ignorable="d"
     Title="MainWindow"
@@ -60,9 +60,9 @@
                     </ComboBoxItem>
                 </ComboBox>
                 <TextBox
-                    command:CommandBehavior.Event="KeyDown"
-                    command:CommandBehavior.Command="{Binding KeyDownCommand}"
-                    command:CommandBehavior.CommandParameter="{Binding ElementName=listView}"
+                    command:MyCommandBehavior.Event="KeyDown"
+                    command:MyCommandBehavior.Command="{Binding KeyDownCommand}"
+                    command:MyCommandBehavior.CommandParameter="{Binding ElementName=listView}"
                     Margin="5,0,0,0"
                     Grid.Column="1"
                     VerticalAlignment="Center"
@@ -85,9 +85,9 @@
             </Grid>
         </GroupBox>
         <GroupBox
-            command:CommandBehavior.Event="KeyDown"
-            command:CommandBehavior.Command="{Binding KeyDownCommand}"
-            command:CommandBehavior.CommandParameter="{Binding ElementName=listView}"
+            command:MyCommandBehavior.Event="KeyDown"
+            command:MyCommandBehavior.Command="{Binding KeyDownCommand}"
+            command:MyCommandBehavior.CommandParameter="{Binding ElementName=listView}"
             Margin="10"
             Grid.Row="1"
             Header="목록">
@@ -95,8 +95,8 @@
                 Name="listView"
                 SelectedItem="{Binding SelectedItem}"
                 ItemsSource="{Binding ShipCollectionView}"
-                command:CommandBehavior.Event="MouseDoubleClick"
-                command:CommandBehavior.Command="{Binding DoubleClickedCommand}"
+                command:MyCommandBehavior.Event="MouseDoubleClick"
+                command:MyCommandBehavior.Command="{Binding DoubleClickedCommand}"
                 AlternationCount="2">
                 <i:Interaction.Behaviors>
                     <Behavior:ScrollSelectedItemIntoViewBehavior />
@@ -144,8 +144,8 @@
                                 <ControlTemplate
                                     TargetType="{x:Type ListViewItem}">
                                     <Border
-                                        command:CommandBehavior.Event="MouseDown"
-                                        command:CommandBehavior.Command="{Binding Path=DataContext.ListViewItemMouseDownCommand,RelativeSource={RelativeSource AncestorType={x:Type Window},Mode=FindAncestor}}"
+                                        command:MyCommandBehavior.Event="MouseDown"
+                                        command:MyCommandBehavior.Command="{Binding Path=DataContext.ListViewItemMouseDownCommand,RelativeSource={RelativeSource AncestorType={x:Type Window},Mode=FindAncestor}}"
                                         Height="30"
                                         CornerRadius="2"
                                         BorderBrush="{TemplateBinding BorderBrush}"
@@ -209,9 +209,9 @@
                                 <GridViewColumn.Header>
                                     <GridViewColumnHeader
                                         Tag="ReceivingDate"
-                                        command:CommandBehavior.Event="Click"
-                                        command:CommandBehavior.Command="{Binding SortCommand}"
-                                        command:CommandBehavior.CommandParameter="ReceivingDate"
+                                        command:MyCommandBehavior.Event="Click"
+                                        command:MyCommandBehavior.Command="{Binding SortCommand}"
+                                        command:MyCommandBehavior.CommandParameter="ReceivingDate"
                                         Content="{Binding DicHeaderName[ReceivingDate]}"></GridViewColumnHeader>
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
@@ -227,9 +227,9 @@
                                 <GridViewColumn.Header>
                                     <GridViewColumnHeader
                                         Tag="MMSI"
-                                        command:CommandBehavior.Event="Click"
-                                        command:CommandBehavior.Command="{Binding SortCommand}"
-                                        command:CommandBehavior.CommandParameter="MMSI"
+                                        command:MyCommandBehavior.Event="Click"
+                                        command:MyCommandBehavior.Command="{Binding SortCommand}"
+                                        command:MyCommandBehavior.CommandParameter="MMSI"
                                         Content="{Binding DicHeaderName[MMSI]}"></GridViewColumnHeader>
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
@@ -245,9 +245,9 @@
                                 <GridViewColumn.Header>
                                     <GridViewColumnHeader
                                         Tag="AISType"
-                                        command:CommandBehavior.Event="Click"
-                                        command:CommandBehavior.Command="{Binding SortCommand}"
-                                        command:CommandBehavior.CommandParameter="AISType"
+                                        command:MyCommandBehavior.Event="Click"
+                                        command:MyCommandBehavior.Command="{Binding SortCommand}"
+                                        command:MyCommandBehavior.CommandParameter="AISType"
                                         Content="{Binding DicHeaderName[AISType]}"></GridViewColumnHeader>
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
@@ -263,9 +263,9 @@
                                 <GridViewColumn.Header>
                                     <GridViewColumnHeader
                                         Tag="Status"
-                                        command:CommandBehavior.Event="Click"
-                                        command:CommandBehavior.Command="{Binding SortCommand}"
-                                        command:CommandBehavior.CommandParameter="Status"
+                                        command:MyCommandBehavior.Event="Click"
+                                        command:MyCommandBehavior.Command="{Binding SortCommand}"
+                                        command:MyCommandBehavior.CommandParameter="Status"
                                         Content="{Binding DicHeaderName[Status]}"></GridViewColumnHeader>
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
@@ -281,9 +281,9 @@
                                 <GridViewColumn.Header>
                                     <GridViewColumnHeader
                                         Tag="ShipName"
-                                        command:CommandBehavior.Event="Click"
-                                        command:CommandBehavior.Command="{Binding SortCommand}"
-                                        command:CommandBehavior.CommandParameter="ShipName"
+                                        command:MyCommandBehavior.Event="Click"
+                                        command:MyCommandBehavior.Command="{Binding SortCommand}"
+                                        command:MyCommandBehavior.CommandParameter="ShipName"
                                         Content="{Binding DicHeaderName[ShipName]}"></GridViewColumnHeader>
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
@@ -299,9 +299,9 @@
                                 <GridViewColumn.Header>
                                     <GridViewColumnHeader
                                         Tag="UserShipName"
-                                        command:CommandBehavior.Event="Click"
-                                        command:CommandBehavior.Command="{Binding SortCommand}"
-                                        command:CommandBehavior.CommandParameter="UserShipName"
+                                        command:MyCommandBehavior.Event="Click"
+                                        command:MyCommandBehavior.Command="{Binding SortCommand}"
+                                        command:MyCommandBehavior.CommandParameter="UserShipName"
                                         Content="{Binding DicHeaderName[UserShipName]}"></GridViewColumnHeader>
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
@@ -317,9 +317,9 @@
                                 <GridViewColumn.Header>
                                     <GridViewColumnHeader
                                         Tag="Latitude"
-                                        command:CommandBehavior.Event="Click"
-                                        command:CommandBehavior.Command="{Binding SortCommand}"
-                                        command:CommandBehavior.CommandParameter="Latitude"
+                                        command:MyCommandBehavior.Event="Click"
+                                        command:MyCommandBehavior.Command="{Binding SortCommand}"
+                                        command:MyCommandBehavior.CommandParameter="Latitude"
                                         Content="{Binding DicHeaderName[Latitude]}"></GridViewColumnHeader>
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
@@ -335,9 +335,9 @@
                                 <GridViewColumn.Header>
                                     <GridViewColumnHeader
                                         Tag="Longtitude"
-                                        command:CommandBehavior.Event="Click"
-                                        command:CommandBehavior.Command="{Binding SortCommand}"
-                                        command:CommandBehavior.CommandParameter="Longtitude"
+                                        command:MyCommandBehavior.Event="Click"
+                                        command:MyCommandBehavior.Command="{Binding SortCommand}"
+                                        command:MyCommandBehavior.CommandParameter="Longtitude"
                                         Content="{Binding DicHeaderName[Longtitude]}"></GridViewColumnHeader>
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
@@ -353,9 +353,9 @@
                                 <GridViewColumn.Header>
                                     <GridViewColumnHeader
                                         Tag="SOG"
-                                        command:CommandBehavior.Event="Click"
-                                        command:CommandBehavior.Command="{Binding SortCommand}"
-                                        command:CommandBehavior.CommandParameter="SOG"
+                                        command:MyCommandBehavior.Event="Click"
+                                        command:MyCommandBehavior.Command="{Binding SortCommand}"
+                                        command:MyCommandBehavior.CommandParameter="SOG"
                                         Content="{Binding DicHeaderName[SOG]}"></GridViewColumnHeader>
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
@@ -371,9 +371,9 @@
                                 <GridViewColumn.Header>
                                     <GridViewColumnHeader
                                         Tag="COG"
-                                        command:CommandBehavior.Event="Click"
-                                        command:CommandBehavior.Command="{Binding SortCommand}"
-                                        command:CommandBehavior.CommandParameter="COG"
+                                        command:MyCommandBehavior.Event="Click"
+                                        command:MyCommandBehavior.Command="{Binding SortCommand}"
+                                        command:MyCommandBehavior.CommandParameter="COG"
                                         Content="{Binding DicHeaderName[COG]}"></GridViewColumnHeader>
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>

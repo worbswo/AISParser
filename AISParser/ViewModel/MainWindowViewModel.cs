@@ -1,5 +1,4 @@
 ﻿using AISParser.Code;
-using AISParser.Code.Command;
 using AISParser.Code.Message;
 using AISParser.Code.Parser;
 using AISParser.Model;
@@ -45,11 +44,12 @@ namespace AISParser.ViewModel
 
 		private ShipViewModel _shipViewModel;
 
-    #endregion
+		#endregion
 
-    #region Property
+		#region Property
+		public static bool Running { get; set; }
 
-        internal DetailWindowViewModel DetailWindowViewModel { get; set; } = new DetailWindowViewModel();
+		internal DetailWindowViewModel DetailWindowViewModel { get; set; } = new DetailWindowViewModel();
         internal DetailWindow DetailWindow { get; set; } = new DetailWindow();
         internal Dictionary<int, ShipViewModel> DicShip { get; set; } = new Dictionary<int, ShipViewModel>(); //선박 모델
         Dictionary<string, Predicate<ShipViewModel>> Filters { get; set; } = new Dictionary<string, Predicate<ShipViewModel>>(); //리스트뷰 필터
@@ -338,7 +338,9 @@ namespace AISParser.ViewModel
             {
                 DicHeaderName.Add(item.Key, item.Value);
             }
-        }
+			Running=true;
+
+		}
 
     #endregion
 
@@ -1322,13 +1324,15 @@ namespace AISParser.ViewModel
         #endregion
 
 
-        internal void Close(bool isClosing = false)
+        public void Exit(bool isClosing = false)
         {
             if (!isClosing)
             {
+				Running = false;
                 MessageParser.Close();
                 receiveMessageThread.Abort();
                 DetailWindow.Owner = App.Current.MainWindow;
+				Close();
             }
         }
      #endregion
