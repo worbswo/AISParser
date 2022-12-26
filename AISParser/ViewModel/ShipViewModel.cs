@@ -3,6 +3,7 @@ using AISParser.Model.AirCraft;
 using AISParser.Model.AtoN;
 using AISParser.Model.ClassA;
 using AISParser.Model.ClassB;
+using Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;

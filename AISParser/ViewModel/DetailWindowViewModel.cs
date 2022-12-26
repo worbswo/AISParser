@@ -1,5 +1,6 @@
 ﻿using AISParser.Code.Message;
 using AISParser.Code.Parser;
+using Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;

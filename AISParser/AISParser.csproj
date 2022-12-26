@@ -35,8 +35,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Common, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dependency\Common.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Expression.Interactions">
       <HintPath>Dependency\Microsoft.Expression.Interactions.dll</HintPath>
+    </Reference>
+    <Reference Include="MyAttachedEventCommand, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dependency\MyAttachedEventCommand.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -119,7 +127,6 @@
     <Compile Include="ViewModel\DetailWindowViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\ShipViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\DetailWindow.xaml.cs">
       <DependentUpon>DetailWindow.xaml</DependentUpon>
     </Compile>
@@ -436,6 +443,10 @@
     <Resource Include="Resources\NationImage\za.png" />
     <Resource Include="Resources\NationImage\zm.png" />
     <Resource Include="Resources\NationImage\zw.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Dependency\Common.dll" />
+    <EmbeddedResource Include="Dependency\MyAttachedEventCommand.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

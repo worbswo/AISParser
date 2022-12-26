@@ -9,6 +9,7 @@ using AISParser.Model.BaseStation;
 using AISParser.Model.ClassA;
 using AISParser.Model.ClassB;
 using AISParser.View;
+using Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -92,7 +93,7 @@ namespace AISParser.ViewModel
             set
             {
                 _dicHeaderName = value;
-                NotifyPropertyChanged("DicHeaderName");
+				OnPropertyChanged("DicHeaderName");
             }
         }
 		public string TrackingMMSIText
