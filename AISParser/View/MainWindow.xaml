@@ -94,7 +94,6 @@
             <ListView
                 Name="listView"
                 SelectedItem="{Binding SelectedItem}"
-                SelectedIndex="{Binding ListSelectedIndex}"
                 ItemsSource="{Binding ShipCollectionView}"
                 command:CommandBehavior.Event="MouseDoubleClick"
                 command:CommandBehavior.Command="{Binding DoubleClickedCommand}"

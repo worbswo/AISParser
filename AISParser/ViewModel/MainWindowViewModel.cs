@@ -47,7 +47,6 @@ namespace AISParser.ViewModel
 		private string _statusText;
 		private string _trackingMMSIText;
         private int _selectedIndex;
-		private int _listSelectedIndex;
         private ICommand _doubleClickedCommand;
         private ICommand _searchCommand;
         private ICommand _keyDownCommand;
@@ -305,26 +304,11 @@ namespace AISParser.ViewModel
                 }
             }
         }
-		public int ListSelectedIndex
-		{
-			get
-			{
-
-				return _listSelectedIndex;
-			}
-			set
-			{
-				
-					_listSelectedIndex = value;
-
-					OnPropertyChanged("ListSelectedIndex");
-				
-			}
-		}
+		
 		
 		#endregion
 
-		#region Construct
+	#region Construct
 		public MainWindowViewModel()
         {
 
@@ -473,12 +457,12 @@ namespace AISParser.ViewModel
 				{
 					if (TrackingMMSIText == AISMessageBase.UserId.ToString())
 					{
-						ListSelectedIndex = 0;
 						SelectedItem = DicShip[(int)AISMessageBase.UserId];
 
 						Task.Run(() =>
 						{
 							MessageBox.Show(StatusText, "INFO");
+							Thread.Sleep(1);
 						});
 
 					}
